@@ -1,5 +1,8 @@
 import Hero from "./components/Hero";
 import Image from "next/image";
+import Link from "next/link";
+
+
 export default function Home() {
   return (
     <>
@@ -55,7 +58,7 @@ export default function Home() {
     バンドやスタジオ経験が初めての方でも安心してご参加ください♪<br />
     限られた時間で音を合わせかけがえのない時間を一緒に過ごしましょう！
   </p>
-  <a
+  <Link
     href="https://note.com/1daystudioband"
     target="_blank"
     rel="noopener noreferrer"
@@ -71,7 +74,7 @@ export default function Home() {
     }}
   >
     活動記録を note で見る
-  </a>
+  </Link>
 </section>
 
 
@@ -255,7 +258,7 @@ export default function Home() {
     エントリー期間についてはXアカウントでも発信しています。
   </p>
 
-  <a
+  <Link
     href="/entry"   // ← ここを将来エントリーページにする
     style={{
       display: "inline-block",
@@ -269,7 +272,7 @@ export default function Home() {
     }}
   >
     募集ページへ
-  </a>
+  </Link>
 </section>
 
       {/* Past Events */}
