@@ -95,9 +95,10 @@ export default function EntryPage() {
       } else {
         setStatus("送信に失敗しました。もう一度お試しください。");
       }
-    } catch (err) {
-      setStatus("エラーが発生しました。");
-    }
+} catch (err) {
+  console.error(err);  // ← 追加
+  setStatus("送信に失敗しました");
+}
   };
 
   return (
