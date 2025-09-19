@@ -40,9 +40,14 @@ export async function POST(req: NextRequest) {
       text: `名前: ${name}\nメール: ${email}\n件名: ${topic}\n内容:\n${message}`,
     });
 
-    return new Response("送信OK", { status: 200 });
-  } catch (err: any) {
-    console.error("Error in /api/contact:", err);
+return new Response("送信OK", { status: 200 });
+} catch (err: unknown) {
+  console.error("Error in /api/contact:", err);
+
+  if (err instanceof Error) {
     return new Response("送信失敗: " + err.message, { status: 500 });
   }
+
+  return new Response("送信失敗: 不明なエラー", { status: 500 });
+}
 }

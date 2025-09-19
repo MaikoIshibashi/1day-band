@@ -20,7 +20,7 @@ const supabase = createClient(
 
 export async function POST(req: NextRequest) {
   try {
-    let {
+    const {
       name,
       email,
       xaccount,
@@ -119,9 +119,14 @@ Web : https://1daystudioband.com
       `,
     });
 
-    return new Response("送信OK", { status: 200 });
-  } catch (err: any) {
-    console.error(err);
+return new Response("送信OK", { status: 200 });
+} catch (err: unknown) {
+  console.error("Error in /api/contact:", err);
+
+  if (err instanceof Error) {
     return new Response("送信失敗: " + err.message, { status: 500 });
   }
+
+  return new Response("送信失敗: 不明なエラー", { status: 500 });
+}
 }

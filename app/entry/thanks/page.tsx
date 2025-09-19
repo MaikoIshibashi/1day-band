@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function EntryThanksPage() {
   return (
     <section
@@ -17,7 +18,7 @@ export default function EntryThanksPage() {
         選考結果は1週間以内に改めてご連絡いたします。
       </p>
 
-      <a
+      <Link
         href="/"
         style={{
           display: "inline-block",
@@ -30,7 +31,7 @@ export default function EntryThanksPage() {
         }}
       >
         ホームに戻る
-      </a>
+      </Link>
     </section>
   );
 }
