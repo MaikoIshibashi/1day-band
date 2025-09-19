@@ -1,8 +1,19 @@
 export default function NotFound() {
   return (
-    <section style={{ color: "white", padding: "2rem", textAlign: "center" }}>
-      <h1>404 - ページが見つかりません</h1>
-      <p>URL が間違っているか、すでに削除された可能性があります。</p>
+    <section
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#000",
+        color: "white",
+        textAlign: "center",
+      }}
+    >
+      <h1 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
+        404 - ページが見つかりません
+      </h1>
     </section>
   );
 }
