@@ -1,5 +1,5 @@
 import Hero from "./components/Hero";
-
+import Image from "next/image";
 export default function Home() {
   return (
     <>
@@ -440,7 +440,7 @@ export default function Home() {
         padding: "1rem",
       }}
     >
-      <img
+      <Image
         src="/1st.png" // ← ここにピック写真を保存
         alt="第1回 記念ピック"
         style={{ width: "100%", borderRadius: "8px", marginBottom: "1rem" }}
@@ -462,7 +462,7 @@ export default function Home() {
         padding: "1rem",
       }}
     >
-      <img
+      <Image
         src="/2nd.png" // ← ここに缶バッジ写真を保存
         alt="第2回 記念缶バッジ"
         style={{ width: "100%", borderRadius: "8px", marginBottom: "1rem" }}
