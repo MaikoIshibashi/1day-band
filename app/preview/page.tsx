@@ -12,33 +12,44 @@ export default function PreviewPage() {
       <Hero />
 
       {/* Status */}
-      <section
-        id="status"
-        className="reveal"
-        style={{
-          padding: "4rem",
-          textAlign: "center",
-          backgroundColor: "#111", // 黒
-        }}
-      >
-        <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
-          現在のステータス
-        </h2>
-        <p style={{ marginTop: "1rem", fontSize: "1.2rem" }}>
-          🎶{" "}
-          <strong style={{ color: "var(--color-accent)" }}>
-            第3回 名古屋セッション
-          </strong>{" "}
-          は
-          <br />
-          2025年10月12日（日）に開催予定です！
-        </p>
-        <p style={{ marginTop: "0.5rem", color: "gray" }}>
-          メンバーはすでに決定しており、当日に向けて準備中です。
-          <br />
-          イベント終了後には、演奏映像を YouTube に公開します。
-        </p>
-      </section>
+<section
+  id="status"
+  className="reveal"
+  style={{
+    padding: "4rem",
+    textAlign: "center",
+    backgroundColor: "#111",
+  }}
+>
+  <h2 style={{ fontSize: "2rem", color: "var(--color-accent)", marginBottom: "1rem" }}>
+    現在のステータス
+  </h2>
+<div
+  style={{
+    background: "linear-gradient(145deg, #1a1a1a, #111)",
+    border: "1px solid rgba(168,85,247,0.4)",
+    borderRadius: "12px",
+    padding: "2rem",
+    maxWidth: "600px",
+    margin: "0 auto",
+    boxShadow: "0 0 20px rgba(168,85,247,0.2)",
+    textAlign: "center",
+  }}
+>
+  <h2 style={{ fontSize: "1.8rem", color: "var(--color-accent)" }}>
+    4th in Fukuoka
+  </h2>
+  <p style={{ marginTop: "0.5rem", fontSize: "1.2rem", color: "#fff" }}>
+    2026.04 開催予定
+  </p>
+  <p style={{ marginTop: "0.5rem", color: "gray" }}>🟣 募集開始前</p>
+  {/* ↓ カード内に配置 */}
+  <p style={{ fontSize: "0.95rem", color: "#aaa", marginTop: "1rem" }}>
+    公開までしばらくお待ちください。。
+  </p>
+  </div>
+
+</section>
 
       {/* About */}
       <section
@@ -60,8 +71,7 @@ export default function PreviewPage() {
             lineHeight: "1.8",
           }}
         >
-          <strong>1Day Studio Band</strong> は、音楽好きが集まり
-          その日限りのバンドを結成してスタジオで演奏し、
+          音楽好きが集まりその日限りのバンドを結成してスタジオで演奏<br />
           その様子を映像として残す企画です。
         </p>
         <p
@@ -71,11 +81,10 @@ export default function PreviewPage() {
             lineHeight: "1.8",
           }}
         >
-          開催は <strong>春と秋の年2回</strong>。全国様々な場所で開催し、
+          開催は春と秋の年2回。<br />全国様々な場所で開催し
           音楽仲間と出会う機会を提供します。
           <br />
-          演奏曲は固定曲 <strong>GLAY「SOUL LOVE」</strong> と、
-          追加の1曲を事前に選曲して発表します。
+          演奏曲はGLAYの中から2曲。こちらで選曲します！
         </p>
         <p
           style={{
@@ -85,8 +94,9 @@ export default function PreviewPage() {
           }}
         >
           初心者からベテランまで、
-          <strong>音楽を楽しみたい気持ち</strong> があれば大歓迎。
-          限られた時間で音を合わせるからこそ、特別な一日になります。
+          音楽を楽しみたい気持ちがあれば大歓迎♪<br />
+          メンバーとは当日までグループDMでやりとり可能！<br />
+          当日は限られた時間で音を合わせ特別な1日をお楽しみください！
         </p>
 
         <a
@@ -108,72 +118,98 @@ export default function PreviewPage() {
         </a>
       </section>
 
-      {/* Fee */}
-      <section
-        id="fee"
-        className="reveal"
-        style={{
-          padding: "4rem",
-          textAlign: "center",
-          backgroundColor: "#111", // 黒に戻す
-        }}
-      >
-        <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
-          参加費
-        </h2>
-        <div
-          style={{
-            maxWidth: "600px",
-            margin: "2rem auto",
-            textAlign: "left",
-            lineHeight: "1.8",
-          }}
-        >
-          <p>
-            <strong style={{ color: "var(--color-accent)" }}>
-              Studio only：
-            </strong>{" "}
-            ¥5,000
-          </p>
-          <p>
-            <strong style={{ color: "var(--color-accent)" }}>
-              Studio ＋ After party：
-            </strong>{" "}
-            ¥9,000{" "}
-            <span style={{ color: "gray" }}>
-              (Studio only ¥5,000 ＋ After party ¥4,000)
-            </span>
-          </p>
+{/* Fee */}
+<section
+  id="fee"
+  className="reveal"
+  style={{
+    padding: "4rem",
+    textAlign: "center",
+    backgroundColor: "#111",
+  }}
+>
+  <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
+    参加費
+  </h2>
+  <div
+    style={{
+      maxWidth: "600px",
+      margin: "2rem auto",
+      textAlign: "left",
+      lineHeight: "1.8",
+    }}
+  >
+    <p>
+      <strong style={{ color: "var(--color-accent)" }}>
+        Studio only：
+      </strong>{" "}
+      ¥5,000
+    </p>
+    <p>
+      <strong style={{ color: "var(--color-accent)" }}>
+        Studio ＋ After party：
+      </strong>{" "}
+      ¥9,000{" "}
+      <span style={{ color: "gray" }}>
+        (Studio only ¥5,000 ＋ After party ¥4,000)
+      </span>
+    </p>
 
-          <hr
-            style={{
-              margin: "2rem 0",
-              border: "1px solid rgba(255,255,255,0.1)",
-            }}
-          />
+    <hr
+      style={{
+        margin: "2rem 0",
+        border: "1px solid rgba(255,255,255,0.1)",
+      }}
+    />
+<ul
+  style={{
+    paddingLeft: "1.2rem",
+    listStyleType: "square",
+    color: "white",
+  }}
+  className="custom-list"
+>
+  <li>スタジオ利用 (5H) ＋ 機材レンタル</li>
+  <li>記念品 (バンドメンバーの名前入り)</li>
+  <li>スコア (パート割含む)</li>
+  <li>YouTube動画（本番2本／MIX込）</li>
+  <li>YouTubeショート ※任意参加（中間イベントコラボ2本／MIX込）</li>
+  <li>当日動画と写真の共有</li>
+  <li>メンバー限定グループDMご案内</li>
+  <li>メンバー用Infoサイトの提供</li>
+  <li>イベントチケット・領収書発行</li>
+  <li>
+    ＋ After party（別途 ¥4,000）
+    <br />
+    美味しい料理とお酒で交流＆音楽トーク！
+  </li>
+</ul>
 
-          <ul style={{ paddingLeft: "1.2rem" }}>
-            <li>スタジオ利用 (5H) ＋ 機材レンタル</li>
-            <li>記念品（参加メンバー名入り）</li>
-            <li>スコア（パート割含む）</li>
-            <li>YouTube動画（本番2本／MIX込）</li>
-            <li>当日の動画・写真共有</li>
-            <li>メンバー限定グループDMご案内</li>
-          </ul>
+<p
+  style={{
+    marginTop: "1rem",
+    fontSize: "0.9rem",
+    color: "gray",
+    textAlign: "left",
+  }}
+>
+  ※ お支払い方法：現金(当日払いのみ)／PayPay／クレジット決済
+</p>
 
-          <p
-            style={{
-              marginTop: "1rem",
-              fontSize: "0.9rem",
-              color: "gray",
-            }}
-          >
-            ※ お支払い方法：現金／PayPay
-            <br />
-            ※ キャンセル料はいただきませんので、安心してお申し込みください。
-          </p>
-        </div>
-      </section>
+<div
+  style={{
+    display: "flex",
+    justifyContent: "left",
+    gap: "1rem",
+    marginTop: "0.5rem",
+  }}
+>
+  <img src="/credit.avif" alt="credit" style={{ height: "20px" }} />
+  
+</div>
+
+  </div>
+</section>
     </>
   );
 }

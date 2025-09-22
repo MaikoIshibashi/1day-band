@@ -6,7 +6,6 @@ export default function RevealOnScroll() {
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>(".reveal");
 
-    // 対応していない環境はすぐ表示
     if (!("IntersectionObserver" in window)) {
       els.forEach((el) => el.classList.add("visible"));
       return;
@@ -16,8 +15,9 @@ export default function RevealOnScroll() {
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting) {
-            e.target.classList.add("visible");
-            io.unobserve(e.target);
+            e.target.classList.add("visible"); // 入ったら表示
+          } else {
+            e.target.classList.remove("visible"); // 出たら消す
           }
         });
       },

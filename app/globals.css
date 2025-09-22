@@ -37,3 +37,8 @@ body {
   opacity: 1;
   transform: none;
 }
+
+/* globals.css に追加 */
+.custom-list li::marker {
+  color: rgb(168, 85, 247); /* var(--color-accent) と同じ紫 */
+}
