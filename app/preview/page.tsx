@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Hero from "../components/Hero";
 import Reveal from "../components/Reveal"; // ← スクロールアニメーション
+import Footer from "../components/Footer"; // ←追加
 
 export default function PreviewPage() {
   return (
@@ -330,6 +331,72 @@ export default function PreviewPage() {
     ))}
   </div>
 </section>
+{/* Voices */}
+<section
+  id="voices"
+  className="reveal"
+  style={{
+    padding: "4rem",
+    textAlign: "center",
+    backgroundColor: "#000",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2rem",
+      color: "var(--color-accent)",
+      marginBottom: "2rem",
+    }}
+  >
+    参加者の声
+  </h2>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+      gap: "1.5rem",
+      maxWidth: "1000px",
+      margin: "0 auto",
+    }}
+  >
+    {[
+      {
+        comment:
+          "バンドで演奏することが、こんなにも楽しいものなんだって、貴重な経験ができてとても幸せです。普段は応援する側だけど、メンバーとして参加する側のバンドにも沼りそうです！",
+      },
+      {
+        comment:
+          "楽しいの一言でした！5時間長いかなと思ったけど、あっという間でした！",
+      },
+      {
+        comment:
+          "参加が決まってから目標を持って練習に取り組めたのは良かったです。準備期間も含めて、とても充実した時間を過ごすことができました。",
+      },
+      {
+        comment:
+          "練習はじめて『できるわけない』と思ったけど、日々修行して少しずつ自信がついた。本番はみんなと演奏できてゾクゾクした！また参加したいです！",
+      },
+      {
+        comment: "楽しかったの一言に尽きますねん🐸✨",
+      },
+    ].map((voice, i) => (
+      <div
+        key={i}
+        style={{
+          backgroundColor: "#111",
+          border: "1px solid rgba(168, 85, 247, 0.3)",
+          borderRadius: "8px",
+          padding: "1.5rem",
+          textAlign: "left",
+          fontSize: "0.95rem",
+          lineHeight: "1.6",
+        }}
+      >
+        <p style={{ margin: 0 }}>{voice.comment}</p>
+      </div>
+    ))}
+  </div>
+</section>
 
 
 {/* Events */}
@@ -339,7 +406,7 @@ export default function PreviewPage() {
   style={{
     padding: "4rem",
     textAlign: "center",
-    backgroundColor: "#000",
+    backgroundColor: "#111",
   }}
 >
   <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
@@ -464,6 +531,126 @@ export default function PreviewPage() {
     ></iframe>
   </div>
 </section>
+{/* Souvenirs */}
+<section
+  id="souvenirs"
+  className="reveal"
+  style={{
+    padding: "4rem",
+    textAlign: "center",
+    backgroundColor: "#000",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2rem",
+      color: "var(--color-accent)",
+      marginBottom: "2rem",
+    }}
+  >
+    過去の記念品
+  </h2>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+      gap: "2rem",
+      maxWidth: "1000px",
+      margin: "0 auto",
+    }}
+  >
+    {/* 第1回 ピック */}
+    <div
+      style={{
+        backgroundColor: "#111",
+        border: "1px solid rgba(168, 85, 247, 0.3)",
+        borderRadius: "8px",
+        padding: "1rem",
+      }}
+    >
+      <img
+        src="/1st.png" // ← public フォルダに保存しておく
+        alt="第1回 記念ピック"
+        style={{
+          width: "100%",
+          borderRadius: "8px",
+          marginBottom: "1rem",
+        }}
+      />
+      <h3
+        style={{
+          color: "var(--color-accent)",
+          marginBottom: "0.5rem",
+        }}
+      >
+        1st 東京セッション
+      </h3>
+      <p style={{ margin: 0, fontSize: "0.9rem" }}>
+        オリジナルピック
+      </p>
+    </div>
+
+    {/* 第2回 缶バッジ */}
+    <div
+      style={{
+        backgroundColor: "#111",
+        border: "1px solid rgba(168, 85, 247, 0.3)",
+        borderRadius: "8px",
+        padding: "1rem",
+      }}
+    >
+      <img
+        src="/2nd.png"
+        alt="第2回 記念缶バッジ"
+        style={{
+          width: "100%",
+          borderRadius: "8px",
+          marginBottom: "1rem",
+        }}
+      />
+      <h3
+        style={{
+          color: "var(--color-accent)",
+          marginBottom: "0.5rem",
+        }}
+      >
+        2nd 大阪セッション
+      </h3>
+      <p style={{ margin: 0, fontSize: "0.9rem" }}>
+        デカデカ缶バッジ
+      </p>
+    </div>
+
+    {/* 第3回 Coming Soon */}
+    <div
+      style={{
+        backgroundColor: "#111",
+        border: "1px solid rgba(168, 85, 247, 0.3)",
+        borderRadius: "8px",
+        padding: "3rem 1rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "gray",
+        fontStyle: "italic",
+      }}
+    >
+      <h3
+        style={{
+          color: "var(--color-accent)",
+          marginBottom: "0.5rem",
+        }}
+      >
+        3rd 名古屋セッション
+      </h3>
+      <p style={{ margin: "0 0 1rem" }}>2025.10 開催予定</p>
+      <p style={{ fontSize: "1.2rem" }}>Coming Soon...</p>
+    </div>
+  </div>
+</section>
+
+    <Footer /> {/* ← 全ページ共通のフッター */}
 
     </>
   );
