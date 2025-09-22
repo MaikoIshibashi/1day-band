@@ -27,14 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-<html lang="ja">
+    <html lang="ja">
       <body
-
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-         <Header />   {/* ←ここに追加 */}
-  <main className="pt-20">{children}</main>
-
+        <Header />
+        <main>{children}</main> {/* ← pt-20を削除 */}
       </body>
     </html>
   );

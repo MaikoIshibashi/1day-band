@@ -15,7 +15,7 @@ export default function PreviewPage() {
       {/* Status */}
 <section
   id="status"
-  className="reveal"
+  className="reveal scroll-mt-20" 
   style={{
     padding: "4rem",
     textAlign: "center",
@@ -55,7 +55,7 @@ export default function PreviewPage() {
       {/* About */}
       <section
         id="about"
-        className="reveal"
+        className="reveal scroll-mt-20" 
         style={{
           padding: "4rem",
           textAlign: "center",
@@ -122,7 +122,7 @@ export default function PreviewPage() {
 {/* Fee */}
 <section
   id="fee"
-  className="reveal"
+  className="reveal scroll-mt-20" 
   style={{
     padding: "4rem",
     textAlign: "center",
@@ -214,7 +214,7 @@ export default function PreviewPage() {
 {/* Timeline */}
 <section
   id="timeline"
-  className="reveal"
+  className="reveal scroll-mt-20" 
   style={{
     padding: "4rem",
     backgroundColor: "#111",
@@ -334,7 +334,7 @@ export default function PreviewPage() {
 {/* Voices */}
 <section
   id="voices"
-  className="reveal"
+  className="reveal scroll-mt-20" 
   style={{
     padding: "4rem",
     textAlign: "center",
@@ -402,7 +402,7 @@ export default function PreviewPage() {
 {/* Events */}
 <section
   id="events"
-  className="reveal"
+  className="reveal scroll-mt-20" 
   style={{
     padding: "4rem",
     textAlign: "center",
@@ -534,7 +534,7 @@ export default function PreviewPage() {
 {/* Souvenirs */}
 <section
   id="souvenirs"
-  className="reveal"
+  className="reveal scroll-mt-20" 
   style={{
     padding: "4rem",
     textAlign: "center",

@@ -1,13 +1,8 @@
-// components/Hero.tsx
 export default function Hero() {
   return (
-    <section
-      id="hero"
-      className="reveal h-[80vh] flex flex-col items-center justify-center text-center 
-                 bg-gradient-to-b from-black via-[#28003c] to-black"
-    >
-      <div className="animate-fade-in-up">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+    <section className="h-[80vh] mt-20 flex flex-col items-center justify-center text-center bg-gradient-to-b from-black via-[#28003c] to-black reveal">
+      <div id="hero">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">
           1Day Studio Band
         </h1>
         <p className="text-purple-400 text-lg md:text-xl">
