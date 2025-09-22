@@ -18,7 +18,7 @@ export default function PreviewPage() {
   style={{
     padding: "4rem",
     textAlign: "center",
-    backgroundColor: "#111",
+    backgroundColor: "#000",
   }}
 >
   <h2 style={{ fontSize: "2rem", color: "var(--color-accent)", marginBottom: "1rem" }}>
@@ -58,7 +58,7 @@ export default function PreviewPage() {
         style={{
           padding: "4rem",
           textAlign: "center",
-          backgroundColor: "#1a1a1a", // 濃いグレー
+          backgroundColor: "#111", // 濃いグレー
         }}
       >
         <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
@@ -125,7 +125,7 @@ export default function PreviewPage() {
   style={{
     padding: "4rem",
     textAlign: "center",
-    backgroundColor: "#111",
+    backgroundColor: "#000",
   }}
 >
   <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
@@ -210,6 +210,261 @@ export default function PreviewPage() {
 
   </div>
 </section>
+{/* Timeline */}
+<section
+  id="timeline"
+  className="reveal"
+  style={{
+    padding: "4rem",
+    backgroundColor: "#111",
+    color: "white",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "2rem",
+      color: "var(--color-accent)",
+      textAlign: "center",
+      marginBottom: "3rem",
+    }}
+  >
+    当日までの流れ
+  </h2>
+
+  {/* タイムライン本体 */}
+  <div
+    style={{
+      maxWidth: "700px",
+      margin: "0 auto",
+      position: "relative",
+    }}
+  >
+    {/* 縦のライン */}
+    <div
+      style={{
+        position: "absolute",
+        left: "20px",
+        top: 0,
+        bottom: 0,
+        width: "2px",
+        background: "#444",
+      }}
+    ></div>
+
+    {[
+      {
+        title: "Entry Open",
+        note: "約5ヶ月前",
+        desc: "募集期間にエントリーページを公開。参加希望の方は当サイトより直接お申し込みください。",
+      },
+      {
+        title: "Member Selection",
+        note: "約1週間後",
+        desc: "希望パートやバランスを考慮し、メンバーを決定。結果は公式メールでご案内します。",
+      },
+      {
+        title: "Practice Log & Updates",
+        note: "本番まで",
+        desc: "グループDMで練習状況や進捗を共有。相談・交流しながら準備を進めます。",
+      },
+      {
+        title: "Midpoint Event",
+        note: "約2ヶ月前",
+        desc: "任意参加の中間イベントで進捗確認やプチセッションを開催。",
+      },
+      {
+        title: "Performance Day",
+        note: "当日",
+        desc: "スタジオで本番演奏を収録。後日編集して YouTube に公開します。",
+      },
+      {
+        title: "After Party",
+        note: "任意参加",
+        desc: "終了後に交流会。美味しい料理とお酒で音楽トークを楽しみましょう。",
+      },
+    ].map((step, i) => (
+      <div
+        key={i}
+        style={{
+          marginBottom: "2rem",
+          paddingLeft: "60px",
+          position: "relative",
+        }}
+        className="reveal"
+      >
+        {/* 丸マーカー */}
+        <div
+          style={{
+            position: "absolute",
+            left: "11px",
+            top: "5px",
+            width: "18px",
+            height: "18px",
+            borderRadius: "50%",
+            background: "var(--color-accent)",
+          }}
+        ></div>
+
+        {/* タイトル＋補足 */}
+        <h3
+          style={{
+            margin: "0 0 0.5rem",
+            fontSize: "1.3rem",
+            color: "var(--color-accent)",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          {step.title}
+          <span style={{ color: "gray", fontSize: "0.9rem" }}>
+            （{step.note}）
+          </span>
+        </h3>
+
+        {/* 説明 */}
+        <p style={{ margin: 0, lineHeight: "1.6", color: "#ddd" }}>
+          {step.desc}
+        </p>
+      </div>
+    ))}
+  </div>
+</section>
+
+
+{/* Events */}
+<section
+  id="events"
+  className="reveal"
+  style={{
+    padding: "4rem",
+    textAlign: "center",
+    backgroundColor: "#000",
+  }}
+>
+  <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
+    過去のイベント
+  </h2>
+
+  {/* 第3回 */}
+  <h3 style={{ marginTop: "2rem", color: "var(--color-accent)" }}>
+    3rd in Nagoya (2025/10予定)
+  </h3>
+  <p style={{ marginTop: "0.5rem", color: "gray" }}>
+    本番は 2025年10月12日（日）に開催予定です。
+  </p>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+      gap: "2rem",
+      maxWidth: "900px",
+      margin: "1.5rem auto",
+    }}
+  >
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/YrbfEhGFHXI"
+      title="第3回 中期イベント SOUL LOVE"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/GvaX2NYzXqo"
+      title="第3回 中期イベント グロリアス"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+  </div>
+
+  {/* 第2回 */}
+  <h3 style={{ marginTop: "2rem", color: "var(--color-accent)" }}>
+    2nd in Osaka (2025/04)
+  </h3>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(2, 1fr)",
+      gap: "2rem",
+      maxWidth: "900px",
+      margin: "1.5rem auto",
+    }}
+  >
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/aCAz5yXyz7I"
+      title="第2回 動画1"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/YLsxuxlOw68"
+      title="第2回 動画2"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+  </div>
+
+  {/* 第1回 */}
+  <h3 style={{ marginTop: "2rem", color: "var(--color-accent)" }}>
+    1st in Tokyo (2024/10)
+  </h3>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+      gap: "2rem",
+      maxWidth: "900px",
+      margin: "1.5rem auto",
+    }}
+  >
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/S2MMTYCTmdI"
+      title="第1回 動画1"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/FuO-1i5C7es"
+      title="第1回 動画2"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/aRuAYXW9Dpk"
+      title="第1回 動画3"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+  </div>
+</section>
+
     </>
   );
 }
