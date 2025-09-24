@@ -19,9 +19,8 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 w-full bg-black bg-opacity-80 backdrop-blur z-50 border-b border-gray-800">
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
-        {/* 左上ロゴ */}
-        <Link href="/preview" className="text-xl font-bold text-purple-400 flex items-center gap-2">
-          <span>🎸</span> 1Day Studio Band
+        <Link href="/preview">
+        <img src="/logo.png" alt="1Day Studio Band ロゴ" className="h-8 w-8" />
         </Link>
 
         {/* PCナビ */}
