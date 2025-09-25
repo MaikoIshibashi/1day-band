@@ -11,6 +11,8 @@ export default function Contact() {
   const [captchaToken, setCaptchaToken] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
+  console.log("SITE KEY:", process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
+
     e.preventDefault();
     if (!captchaToken) {
       setStatus("reCAPTCHA を確認してください。");
