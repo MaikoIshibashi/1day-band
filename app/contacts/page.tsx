@@ -125,11 +125,11 @@ export default function Contact() {
           }}
         />
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <ReCAPTCHA
-            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-            onChange={(token) => setCaptchaToken(token ?? "")}
-            theme="dark"
-          />
+<ReCAPTCHA
+  sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
+  onChange={(token) => setCaptchaToken(token ?? "")}
+  theme="dark"
+/>
         </div>
         <button
           type="submit"
