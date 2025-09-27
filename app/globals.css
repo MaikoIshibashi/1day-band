@@ -26,16 +26,27 @@ body {
   color: var(--color-foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-/* スクロールでふわっと出る用 */
+/* ページ全体のふわっと */
 .reveal {
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.8s ease-out;
 }
-
 .reveal.visible {
   opacity: 1;
   transform: none;
+}
+
+/* FAQ開閉アニメーション */
+.faq-answer {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.4s ease-out;
+}
+.faq-answer.open {
+  max-height: 800px; /* 全開時の高さ（余裕を持たせる） */
+  opacity: 1;
 }
 
 /* globals.css に追加 */

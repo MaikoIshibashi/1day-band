@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Contact() {
@@ -9,11 +9,18 @@ export default function Contact() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    // マウント時に一度だけふわっと発火
+    setVisible(false); // ←一旦リセット
+    const timer = setTimeout(() => setVisible(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-  console.log("SITE KEY:", process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
-
     e.preventDefault();
+
     if (!captchaToken) {
       setStatus("reCAPTCHA を確認してください。");
       return;
@@ -41,6 +48,7 @@ export default function Contact() {
 
   return (
     <section
+      className={`reveal ${visible ? "visible" : ""}`}
       style={{
         minHeight: "100vh",
         padding: "4rem",
@@ -125,11 +133,11 @@ export default function Contact() {
           }}
         />
         <div style={{ display: "flex", justifyContent: "center" }}>
-<ReCAPTCHA
-  sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
-  onChange={(token) => setCaptchaToken(token ?? "")}
-  theme="dark"
-/>
+          <ReCAPTCHA
+            sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
+            onChange={(token) => setCaptchaToken(token ?? "")}
+            theme="dark"
+          />
         </div>
         <button
           type="submit"

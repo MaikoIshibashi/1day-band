@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { FaLock } from "react-icons/fa";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,28 +11,38 @@ export default function Header() {
     { label: "Events", href: "/preview#events" },
     { label: "Entry", href: "/preview/entry" },
     { label: "Contact", href: "/contact" },
-    { label: "FAQ", href: "/preview/faq" },
-    { label: "Members", href: "/preview/members", lock: true },
+    { label: "FAQ", href: "/faq" },
+    { label: "Members", href: "/members", special: true }, // ← special
   ];
 
   return (
     <header className="fixed top-0 left-0 w-full bg-black bg-opacity-80 backdrop-blur z-50 border-b border-gray-800">
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
         <Link href="/preview">
-        <img src="/logo.png" alt="1Day Studio Band ロゴ" className="h-8 w-8" />
+          <img src="/logo.png" alt="1Day Studio Band ロゴ" className="h-8 w-8" />
         </Link>
 
         {/* PCナビ */}
         <nav className="hidden md:flex gap-6">
           {navItems.map((item) => (
             <Link
-              key={item.href}
-              href={item.href}
-              className="text-gray-300 hover:text-purple-400 transition flex items-center gap-1"
+            key={item.href}
+            href={item.href}
+            className={`relative group transition-colors duration-300 flex items-center ${
+                item.special
+                ? "text-amber-500 hover:text-amber-400"
+                : "text-gray-300 hover:text-purple-400"
+            }`}
             >
-              {item.lock && <FaLock className="text-xs" />}
-              {item.label}
+            {item.special && <span className="text-sm">🔒</span>}
+            <span className="ml-[2px]">{item.label}</span>
+            <span
+                className={`absolute left-0 -bottom-1 h-[2px] w-0 transition-all duration-300 group-hover:w-full ${
+                item.special ? "bg-amber-500" : "bg-purple-400"
+                }`}
+            ></span>
             </Link>
+
           ))}
         </nav>
 
@@ -53,10 +62,14 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-gray-300 hover:text-purple-400 transition flex items-center gap-1"
+              className={`transition flex items-center gap-1 ${
+                item.special
+                  ? "text-amber-500 hover:text-amber-400"
+                  : "text-gray-300 hover:text-purple-400"
+              }`}
               onClick={() => setIsOpen(false)}
             >
-              {item.lock && <FaLock className="text-xs" />}
+              {item.special && <span className="mr-1">🔒</span>}
               {item.label}
             </Link>
           ))}
