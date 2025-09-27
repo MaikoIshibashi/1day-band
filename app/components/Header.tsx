@@ -11,7 +11,7 @@ export default function Header() {
     { label: "About", href: "/preview#about" },
     { label: "Events", href: "/preview#events" },
     { label: "Entry", href: "/preview/entry" },
-    { label: "Contact", href: "/contacts" },
+    { label: "Contact", href: "/contact" },
     { label: "FAQ", href: "/preview/faq" },
     { label: "Members", href: "/preview/members", lock: true },
   ];
