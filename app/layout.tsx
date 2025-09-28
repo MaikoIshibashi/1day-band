@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "./components/Header";
-import RevealOnScroll from "./components/Reveal"; // ← 追加
+import SiteChrome from "./site-chrome"; // ← 新しく作るファイルを読み込む
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,10 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "1Day Studio Band", // ← タブに表示されるタイトル
+  title: "1Day Studio Band",
   description: "音楽仲間と作る特別な一日を！",
   icons: {
-    icon: "/favicon.ico", // public/favicon.ico を置けば自動で使われる
+    icon: "/favicon.ico",
   },
 };
 
@@ -32,10 +31,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        <RevealOnScroll /> {/* ← ここで一度だけ呼び出す */}
-
-        <main>{children}</main> {/* ← pt-20を削除 */}
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
