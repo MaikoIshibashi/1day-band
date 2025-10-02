@@ -6,17 +6,15 @@ export const metadata = {
     follow: false, // リンクも辿らない
   },
 };
-
+ 
 export default function SurveyLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
-      <body className="bg-black text-white">
-        {children}
-      </body>
-    </html>
+    <section className="bg-black text-white min-h-screen">
+      {children}
+    </section>
   );
 }
