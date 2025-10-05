@@ -26,7 +26,7 @@ export default function Footer() {
   }}
 >
   <a
-    href="https://x.com/_maimai_817_"
+    href="https://x.com/1DayStudioBand"
     target="_blank"
     rel="noopener noreferrer"
     style={{ color: "var(--color-accent)" }}
@@ -34,7 +34,7 @@ export default function Footer() {
     <FaXTwitter />
   </a>
   <a
-    href="https://www.youtube.com/@myaimyai7730"
+    href="https://www.youtube.com/@1DayStudioBand"
     target="_blank"
     rel="noopener noreferrer"
     style={{ color: "var(--color-accent)" }}
@@ -49,9 +49,6 @@ export default function Footer() {
   </a>
 
 </div>
-  <p style={{ fontSize: "0.8rem", color: "gray", marginTop: "0.5rem" }}>
-  主催：MYAI💜MYAI（X / YouTube）
-</p>
     </footer>
   );
 }
