@@ -5,7 +5,15 @@ import { supabase } from "@/lib/supabaseClient";
 import ReCAPTCHA from "react-google-recaptcha";
 
 export default function EntryPage() {
-  const [event, setEvent] = useState<any>(null);
+    type EventData = {
+    id: number;
+    name: string;
+    start_date: string | null;
+    end_date: string | null;
+    event_date: string | null;
+    };
+
+    const [event, setEvent] = useState<EventData | null>(null);
   const [captchaToken, setCaptchaToken] = useState("");
   const [status, setStatus] = useState("");
 
@@ -91,7 +99,10 @@ export default function EntryPage() {
       }
 
       if (!member) throw new Error("メンバーを作成できませんでした");
-
+        if (!event) {
+        setStatus("イベント情報が取得できませんでした。");
+        return;
+        }
       // ==== entries に応募保存 ====
       const { error: entryError } = await supabase.from("entries").insert([
         {
