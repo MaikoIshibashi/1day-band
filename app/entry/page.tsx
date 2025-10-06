@@ -5,15 +5,15 @@ import { supabase } from "@/lib/supabaseClient";
 import ReCAPTCHA from "react-google-recaptcha";
 
 export default function EntryPage() {
-    type EventData = {
+  type EventData = {
     id: number;
     name: string;
     start_date: string | null;
     end_date: string | null;
     event_date: string | null;
-    };
+  };
 
-    const [event, setEvent] = useState<EventData | null>(null);
+  const [event, setEvent] = useState<EventData | null>(null);
   const [captchaToken, setCaptchaToken] = useState("");
   const [status, setStatus] = useState("");
 
@@ -54,6 +54,7 @@ export default function EntryPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // ==== 修正版 handleSubmit ====
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -66,8 +67,8 @@ export default function EntryPage() {
       return;
     }
     if (form.part2 && !form.level2) {
-    setStatus("第二希望の演奏歴を選択してください。");
-    return;
+      setStatus("第二希望の演奏歴を選択してください。");
+      return;
     }
 
     setStatus("送信中...");
@@ -99,27 +100,41 @@ export default function EntryPage() {
       }
 
       if (!member) throw new Error("メンバーを作成できませんでした");
-        if (!event) {
+      if (!event) {
         setStatus("イベント情報が取得できませんでした。");
         return;
-        }
+      }
 
-            // ==== entries に応募保存 ====
-        const { error: entryError } = await supabase.from("entries").insert([
+      // ==== entries に応募保存 ====
+      const { error: entryError } = await supabase.from("entries").insert([
         {
-            member_id: member.id,
-            event_id: event.id, // ← この時点で null の心配なし
-                part1: form.part1,
-                level1: form.level1,
-                part2: form.part2,
-                level2: form.level2,
-                message: form.message,
+          member_id: member.id,
+          event_id: event.id,
+          part1: form.part1,
+          level1: form.level1,
+          part2: form.part2,
+          level2: form.level2,
+          message: form.message,
         },
-        ]);
-
+      ]);
       if (entryError) throw entryError;
 
+      // ==== 確認メール送信 ====
+      const mailRes = await fetch("/api/send-confirmation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!mailRes.ok) {
+        console.error("メール送信失敗:", await mailRes.text());
+        setStatus("エントリーは保存されましたが、確認メールの送信に失敗しました。");
+        return;
+      }
+
+      // ==== サンクスページへ ====
       window.location.href = "/entry/thanks";
+
     } catch (err) {
       console.error(err);
       setStatus("送信に失敗しました。");
@@ -197,56 +212,55 @@ export default function EntryPage() {
       </div>
 
       {/* イベント情報 */}
-        <div
+      <div
         style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "2rem",
-            marginBottom: "3rem",
-            flexWrap: "wrap",
+          display: "flex",
+          justifyContent: "center",
+          gap: "2rem",
+          marginBottom: "3rem",
+          flexWrap: "wrap",
         }}
-        >
+      >
         <div
-            style={{
+          style={{
             padding: "1rem 2rem",
             border: "1px solid var(--color-accent)",
             borderRadius: "8px",
             textAlign: "center",
             minWidth: "200px",
-            }}
+          }}
         >
-            <p style={{ color: "var(--color-accent)", fontWeight: "bold", marginBottom: "0.5rem" }}>
+          <p style={{ color: "var(--color-accent)", fontWeight: "bold", marginBottom: "0.5rem" }}>
             開催日
-            </p>
-            <p style={{ fontSize: "1.4rem", fontWeight: "bold" }}>
+          </p>
+          <p style={{ fontSize: "1.4rem", fontWeight: "bold" }}>
             {event.event_date
-                ? new Date(event.event_date).toLocaleDateString("ja-JP")
-                : "未定"}
-            </p>
+              ? new Date(event.event_date).toLocaleDateString("ja-JP")
+              : "未定"}
+          </p>
         </div>
 
         <div
-            style={{
+          style={{
             padding: "1rem 2rem",
             border: "1px solid #555",
             borderRadius: "8px",
             textAlign: "center",
             minWidth: "200px",
-            }}
+          }}
         >
-            <p style={{ color: "gray", fontWeight: "bold", marginBottom: "0.5rem" }}>
+          <p style={{ color: "gray", fontWeight: "bold", marginBottom: "0.5rem" }}>
             エントリー期間
-            </p>
-            <p style={{ fontSize: "1rem" }}>
+          </p>
+          <p style={{ fontSize: "1rem" }}>
             {event.start_date && event.end_date
-                ? `${new Date(event.start_date).toLocaleDateString("ja-JP")} ～ ${new Date(
-                    event.end_date
+              ? `${new Date(event.start_date).toLocaleDateString("ja-JP")} ～ ${new Date(
+                  event.end_date
                 ).toLocaleDateString("ja-JP")}`
-                : "未定"}
-            </p>
+              : "未定"}
+          </p>
         </div>
-        </div>
-
+      </div>
 
       {isOpen ? (
         <form
@@ -362,9 +376,9 @@ export default function EntryPage() {
           {/* reCAPTCHA */}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ReCAPTCHA
-            sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
-            onChange={(token: string | null) => setCaptchaToken(token ?? "")}
-            theme="dark"
+              sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
+              onChange={(token: string | null) => setCaptchaToken(token ?? "")}
+              theme="dark"
             />
           </div>
 
