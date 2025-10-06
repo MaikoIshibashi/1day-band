@@ -103,18 +103,19 @@ export default function EntryPage() {
         setStatus("イベント情報が取得できませんでした。");
         return;
         }
-      // ==== entries に応募保存 ====
-      const { error: entryError } = await supabase.from("entries").insert([
+
+            // ==== entries に応募保存 ====
+        const { error: entryError } = await supabase.from("entries").insert([
         {
-          member_id: member.id,
-          event_id: event.id,
-          part1: form.part1,
-          level1: form.level1,
-          part2: form.part2,
-          level2: form.level2,
-          message: form.message,
+            member_id: member.id,
+            event_id: event.id, // ← この時点で null の心配なし
+                part1: form.part1,
+                level1: form.level1,
+                part2: form.part2,
+                level2: form.level2,
+                message: form.message,
         },
-      ]);
+        ]);
 
       if (entryError) throw entryError;
 
