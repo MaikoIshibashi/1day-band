@@ -358,14 +358,13 @@ export default function EntryPage() {
             placeholder="メッセージ（任意）"
             style={textareaStyle}
           />
-console.log("sitekey in client:", process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
 
           {/* reCAPTCHA */}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ReCAPTCHA
-              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-              onChange={(token: string | null) => setCaptchaToken(token ?? "")}
-              theme="dark"
+            sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
+            onChange={(token: string | null) => setCaptchaToken(token ?? "")}
+            theme="dark"
             />
           </div>
 
