@@ -358,6 +358,7 @@ export default function EntryPage() {
             placeholder="メッセージ（任意）"
             style={textareaStyle}
           />
+console.log("sitekey in client:", process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
 
           {/* reCAPTCHA */}
           <div style={{ display: "flex", justifyContent: "center" }}>
