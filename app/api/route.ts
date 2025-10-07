@@ -2,6 +2,14 @@
 import { NextRequest } from "next/server";
 import nodemailer from "nodemailer";
 
+console.log("ENV CHECK:", {
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_PORT,
+  user: process.env.MAIL_USER ? "SET" : "MISSING",
+  pass: process.env.MAIL_PASS ? "SET" : "MISSING",
+});
+
+
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: Number(process.env.MAIL_PORT),
@@ -32,14 +40,22 @@ export async function POST(req: NextRequest) {
       return new Response("reCAPTCHA エラー", { status: 400 });
     }
 
-    // ===== メール送信 =====
+    // 運営宛て（今まで通り）
     await transporter.sendMail({
       from: `"1Day Studio Band" <info@1daystudioband.com>`,
       to: "info@1daystudioband.com",
       subject: `[${topic}] 新しいお問い合わせ`,
       text: `名前: ${name}\nメール: ${email}\n件名: ${topic}\n内容:\n${message}`,
-      replyTo: email, // ← ここ入れると返信が送信者に返るよ
     });
+
+    // ユーザー宛て（自動返信）
+    await transporter.sendMail({
+      from: `"1Day Studio Band" <info@1daystudioband.com>`,
+      to: email, // 👈 入力された相手のメール
+      subject: "【1Day Studio Band】お問い合わせを受け付けました",
+      text: `${name} 様\n\nお問い合わせありがとうございます！\n以下の内容で受け付けました。\n\n---\n件名: ${topic}\n内容:\n${message}\n\n運営より折り返しご連絡いたしますので、しばらくお待ちください。\n\n──────────────\n1Day Studio Band 運営\ninfo@1daystudioband.com`,
+    });
+
 
     return new Response("送信OK", { status: 200 });
   } catch (err: unknown) {
