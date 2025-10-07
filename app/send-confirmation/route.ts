@@ -1,3 +1,4 @@
+// app/send-confirmation/route.ts
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
@@ -5,20 +6,22 @@ export async function POST(req: Request) {
   try {
     const form = await req.json();
 
+    // ===== nodemailer 設定 =====
     const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: Number(process.env.MAIL_PORT),
-      secure: true,
+      host: process.env.MAIL_HOST, // mail.privateemail.com
+      port: Number(process.env.MAIL_PORT), // 465
+      secure: Number(process.env.MAIL_PORT) === 465, // 465ならtrue
       auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        user: process.env.MAIL_USER, // info@1daystudioband.com
+        pass: process.env.MAIL_PASS, // PrivateEmailのパスワード
       },
     });
 
+    // ===== メール内容 =====
     const mailOptions = {
-      from: process.env.MAIL_USER,
+      from: process.env.MAIL_USER, // ← 必ず送信元は認証済みのアドレスにする
       to: form.email, // 応募者宛
-      bcc: process.env.MAIL_USER, // 運営用に自分にもコピー
+      bcc: process.env.MAIL_USER, // 運営にもコピー
       subject: "【1Day Studio Band】エントリー確認",
       text: `
 ${form.name} 様
@@ -58,6 +61,7 @@ ${form.message || "なし"}
       `,
     };
 
+    // ===== メール送信 =====
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json({ success: true });
