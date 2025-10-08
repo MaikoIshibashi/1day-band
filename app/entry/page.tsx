@@ -21,10 +21,12 @@ export default function EntryPage() {
     name: "",
     email: "",
     xaccount: "",
+    region: "",
     part1: "",
     level1: "",
     part2: "",
     level2: "",
+    songs: [] as string[], // 追加
     message: "",
   });
 
@@ -54,11 +56,21 @@ export default function EntryPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ==== 修正版 handleSubmit ====
+  const handleSongChange = (song: string) => {
+    setForm((prev) => {
+      const selected = prev.songs.includes(song)
+        ? prev.songs.filter((s) => s !== song)
+        : [...prev.songs, song];
+      if (selected.length > 2) return prev; // 2曲まで制限
+      return { ...prev, songs: selected };
+    });
+  };
+
+  // ==== handleSubmit ====
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.name.trim() || !form.email.trim() || !form.xaccount.trim()) {
+    if (!form.name.trim() || !form.email.trim() || !form.xaccount.trim() || !form.region) {
       setStatus("必須項目を入力してください。");
       return;
     }
@@ -68,6 +80,10 @@ export default function EntryPage() {
     }
     if (form.part2 && !form.level2) {
       setStatus("第二希望の演奏歴を選択してください。");
+      return;
+    }
+    if (form.songs.length !== 2) {
+      setStatus("希望曲は2曲選択してください。");
       return;
     }
 
@@ -110,10 +126,12 @@ export default function EntryPage() {
         {
           member_id: member.id,
           event_id: event.id,
+          region: form.region,
           part1: form.part1,
           level1: form.level1,
           part2: form.part2,
           level2: form.level2,
+          songs: form.songs,
           message: form.message,
         },
       ]);
@@ -211,57 +229,6 @@ export default function EntryPage() {
         </h1>
       </div>
 
-      {/* イベント情報 */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "2rem",
-          marginBottom: "3rem",
-          flexWrap: "wrap",
-        }}
-      >
-        <div
-          style={{
-            padding: "1rem 2rem",
-            border: "1px solid var(--color-accent)",
-            borderRadius: "8px",
-            textAlign: "center",
-            minWidth: "200px",
-          }}
-        >
-          <p style={{ color: "var(--color-accent)", fontWeight: "bold", marginBottom: "0.5rem" }}>
-            開催日
-          </p>
-          <p style={{ fontSize: "1.4rem", fontWeight: "bold" }}>
-            {event.event_date
-              ? new Date(event.event_date).toLocaleDateString("ja-JP")
-              : "未定"}
-          </p>
-        </div>
-
-        <div
-          style={{
-            padding: "1rem 2rem",
-            border: "1px solid #555",
-            borderRadius: "8px",
-            textAlign: "center",
-            minWidth: "200px",
-          }}
-        >
-          <p style={{ color: "gray", fontWeight: "bold", marginBottom: "0.5rem" }}>
-            エントリー期間
-          </p>
-          <p style={{ fontSize: "1rem" }}>
-            {event.start_date && event.end_date
-              ? `${new Date(event.start_date).toLocaleDateString("ja-JP")} ～ ${new Date(
-                  event.end_date
-                ).toLocaleDateString("ja-JP")}`
-              : "未定"}
-          </p>
-        </div>
-      </div>
-
       {isOpen ? (
         <form
           onSubmit={handleSubmit}
@@ -300,18 +267,36 @@ export default function EntryPage() {
             style={inputStyle}
           />
 
-          {/* 第一希望 */}
-          <h3
-            style={{
-              color: "var(--color-accent)",
-              fontWeight: "bold",
-              fontSize: "1.2rem",
-              borderLeft: "4px solid var(--color-accent)",
-              paddingLeft: "0.5rem",
-            }}
-          >
-            🎸 第一希望
-          </h3>
+          {/* 地域 */}
+          <h3 style={{ color: "var(--color-accent)" }}>📍 地域</h3>
+          <select name="region" value={form.region} onChange={handleChange} required style={selectStyle}>
+            <option value="">地域を選択</option>
+            <option>北海道</option>
+            <option>東北</option>
+            <option>関東</option>
+            <option>中部</option>
+            <option>近畿</option>
+            <option>中国</option>
+            <option>四国</option>
+            <option>九州</option>
+            <option>沖縄</option>
+          </select>
+
+          {/* 希望曲 */}
+          <h3 style={{ color: "var(--color-accent)" }}>🎵 希望曲（2曲選択してください）</h3>
+          {["SOUL LOVE", "HOWEVER", "サバイバル"].map((song) => (
+            <label key={song} style={{ textAlign: "left" }}>
+              <input
+                type="checkbox"
+                checked={form.songs.includes(song)}
+                onChange={() => handleSongChange(song)}
+              />{" "}
+              {song}
+            </label>
+          ))}
+
+          {/* 第一希望パート */}
+          <h3 style={{ color: "var(--color-accent)" }}>🎸 第一希望</h3>
           <select name="part1" value={form.part1} onChange={handleChange} required style={selectStyle}>
             <option value="">第一希望パートを選択</option>
             <option>ギター</option>
@@ -332,18 +317,8 @@ export default function EntryPage() {
             <option>10年以上</option>
           </select>
 
-          {/* 第二希望 */}
-          <h3
-            style={{
-              color: "var(--color-accent)",
-              fontWeight: "bold",
-              fontSize: "1.2rem",
-              borderLeft: "4px solid var(--color-accent)",
-              paddingLeft: "0.5rem",
-            }}
-          >
-            🎶 第二希望
-          </h3>
+          {/* 第二希望パート */}
+          <h3 style={{ color: "var(--color-accent)" }}>🎶 第二希望</h3>
           <select name="part2" value={form.part2} onChange={handleChange} style={selectStyle}>
             <option value="">第二希望パートを選択（任意）</option>
             <option>ギター</option>
