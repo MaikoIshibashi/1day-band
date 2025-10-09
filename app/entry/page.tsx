@@ -126,6 +126,7 @@ export default function EntryPage() {
         {
           member_id: member.id,
           event_id: event.id,
+          nickname: form.name,   // ← 応募時のニックネームを保存
           region: form.region,
           part1: form.part1,
           level1: form.level1,
@@ -305,7 +306,7 @@ export default function EntryPage() {
             <option>キーボード</option>
             <option>ボーカル</option>
             <option>コーラス</option>
-            <option>タンバリン</option>
+            <option>パーカッション</option>
           </select>
           <select name="level1" value={form.level1} onChange={handleChange} required style={selectStyle}>
             <option value="">演奏歴を選択</option>
@@ -327,7 +328,7 @@ export default function EntryPage() {
             <option>キーボード</option>
             <option>ボーカル</option>
             <option>コーラス</option>
-            <option>タンバリン</option>
+            <option>パーカッション</option>
           </select>
           <select name="level2" value={form.level2} onChange={handleChange} style={selectStyle}>
             <option value="">演奏歴を選択（任意）</option>
