@@ -28,12 +28,10 @@ export default function EntryPage() {
     level2: "",
     songs: [] as string[],
     plan: "",
-    availability: "", // 🗓️ 追加
+    availability: "",
     message: "",
   });
 
-
-  // ==== 最新イベントを取得 ====
   useEffect(() => {
     const fetchEvent = async () => {
       const { data, error } = await supabase
@@ -69,7 +67,6 @@ export default function EntryPage() {
     });
   };
 
-  // ==== handleSubmit ====
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -93,23 +90,17 @@ export default function EntryPage() {
     setStatus("送信中...");
 
     try {
-      // ==== メンバーを探す ====
       let { data: member } = await supabase
         .from("members")
         .select("id")
         .eq("email", form.email)
         .single();
 
-      // ==== なければ新規作成 ====
       if (!member) {
         const { data: newMember, error: memberError } = await supabase
           .from("members")
           .insert([
-            {
-              name: form.name,
-              email: form.email,
-              xaccount: form.xaccount,
-            },
+            { name: form.name, email: form.email, xaccount: form.xaccount },
           ])
           .select()
           .single();
@@ -124,7 +115,6 @@ export default function EntryPage() {
         return;
       }
 
-      // ==== entries に応募保存 ====
       const { error: entryError } = await supabase.from("entries").insert([
         {
           member_id: member.id,
@@ -134,14 +124,12 @@ export default function EntryPage() {
           part2: form.part2,
           level2: form.level2,
           plan: form.plan,
-          availability: form.availability, // 🆕 ←ここを追加！
+          availability: form.availability,
           message: form.message,
         },
       ]);
-
       if (entryError) throw entryError;
 
-      // ==== 確認メール送信 ====
       const mailRes = await fetch("/api/send-confirmation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -154,16 +142,13 @@ export default function EntryPage() {
         return;
       }
 
-      // ==== サンクスページへ ====
       window.location.href = "/entry/thanks";
-
     } catch (err) {
       console.error(err);
       setStatus("送信に失敗しました。");
     }
   };
 
-  // ==== イベント未取得中 ====
   if (!event) {
     return (
       <section style={{ padding: "4rem", textAlign: "center", color: "white" }}>
@@ -172,7 +157,6 @@ export default function EntryPage() {
     );
   }
 
-  // ==== エントリー期間判定 ====
   const now = new Date();
   const isOpen =
     event.start_date &&
@@ -180,7 +164,14 @@ export default function EntryPage() {
     now >= new Date(event.start_date) &&
     now <= new Date(event.end_date);
 
-  // ==== 共通スタイル ====
+  const fieldTitle = {
+    color: "var(--color-accent)",
+    fontWeight: "bold",
+    fontSize: "1.2rem",
+    borderLeft: "4px solid var(--color-accent)",
+    paddingLeft: "0.5rem",
+  } as React.CSSProperties;
+
   const inputStyle = {
     padding: "1rem",
     borderRadius: "8px",
@@ -188,11 +179,11 @@ export default function EntryPage() {
     backgroundColor: "#111",
     color: "white",
     fontSize: "1rem",
+    width: "100%",
   } as React.CSSProperties;
 
   const selectStyle = { ...inputStyle };
   const textareaStyle = { ...inputStyle, minHeight: "120px" };
-
   const buttonStyle = {
     padding: "1rem",
     borderRadius: "8px",
@@ -215,7 +206,6 @@ export default function EntryPage() {
         lineHeight: 1.8,
       }}
     >
-      {/* タイトル */}
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
         <h1
           style={{
@@ -241,38 +231,14 @@ export default function EntryPage() {
             margin: "0 auto",
             display: "flex",
             flexDirection: "column",
-            gap: "2rem",
+            gap: "1.5rem",
           }}
         >
-          {/* 基本情報 */}
-          <input
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="ニックネーム"
-            required
-            style={inputStyle}
-          />
-          <input
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            type="email"
-            placeholder="メールアドレス"
-            required
-            style={inputStyle}
-          />
-          <input
-            name="xaccount"
-            value={form.xaccount}
-            onChange={handleChange}
-            placeholder="Xアカウント（@なし）"
-            required
-            style={inputStyle}
-          />
+          <input name="name" value={form.name} onChange={handleChange} placeholder="ニックネーム" required style={inputStyle} />
+          <input name="email" value={form.email} onChange={handleChange} type="email" placeholder="メールアドレス" required style={inputStyle} />
+          <input name="xaccount" value={form.xaccount} onChange={handleChange} placeholder="Xアカウント（@なし）" required style={inputStyle} />
 
-          {/* 地域 */}
-          <h3 style={{ color: "var(--color-accent)" }}>📍 地域</h3>
+          <h3 style={fieldTitle}>地域</h3>
           <select name="region" value={form.region} onChange={handleChange} required style={selectStyle}>
             <option value="">地域を選択</option>
             <option>北海道</option>
@@ -286,51 +252,28 @@ export default function EntryPage() {
             <option>沖縄</option>
           </select>
 
-          {/* 希望曲 */}
-          <h3 style={{ color: "var(--color-accent)" }}>🎵 希望曲（2曲選択してください）</h3>
-          {["SOUL LOVE", "HOWEVER", "サバイバル"].map((song) => (
-            <label key={song} style={{ textAlign: "left" }}>
-              <input
-                type="checkbox"
-                checked={form.songs.includes(song)}
-                onChange={() => handleSongChange(song)}
-              />{" "}
-              {song}
-            </label>
-          ))}
-          {/* 参加プラン */}
-          <h3
-            style={{
-              color: "var(--color-accent)",
-              fontWeight: "bold",
-              fontSize: "1.2rem",
-              borderLeft: "4px solid var(--color-accent)",
-              paddingLeft: "0.5rem",
-            }}
-          >
-            💰 参加プラン
-          </h3>
-          <select
-            name="plan"
-            value={form.plan}
-            onChange={handleChange}
-            required
-            style={{
-              padding: "1rem",
-              borderRadius: "8px",
-              border: "1px solid #555",
-              backgroundColor: "#111",
-              color: "white",
-              fontSize: "1rem",
-            }}
-          >
+          <h3 style={fieldTitle}>希望曲（2曲選択）</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {["SOUL LOVE", "HOWEVER", "サバイバル"].map((song) => (
+              <label key={song} style={{ cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  checked={form.songs.includes(song)}
+                  onChange={() => handleSongChange(song)}
+                />{" "}
+                {song}
+              </label>
+            ))}
+          </div>
+
+          <h3 style={fieldTitle}>参加プラン</h3>
+          <select name="plan" value={form.plan} onChange={handleChange} required style={selectStyle}>
             <option value="">参加プランを選択</option>
             <option>スタジオのみ（¥5,000）</option>
             <option>スタジオ＋打ち上げ（¥9,000）</option>
           </select>
 
-          {/* 第一希望パート */}
-          <h3 style={{ color: "var(--color-accent)" }}>🎸 第一希望</h3>
+          <h3 style={fieldTitle}>第一希望パート</h3>
           <select name="part1" value={form.part1} onChange={handleChange} required style={selectStyle}>
             <option value="">第一希望パートを選択</option>
             <option>ギター</option>
@@ -351,10 +294,9 @@ export default function EntryPage() {
             <option>10年以上</option>
           </select>
 
-          {/* 第二希望パート */}
-          <h3 style={{ color: "var(--color-accent)" }}>🎶 第二希望</h3>
+          <h3 style={fieldTitle}>第二希望パート（任意）</h3>
           <select name="part2" value={form.part2} onChange={handleChange} style={selectStyle}>
-            <option value="">第二希望パートを選択（任意）</option>
+            <option value="">第二希望パートを選択</option>
             <option>ギター</option>
             <option>ベース</option>
             <option>ドラム</option>
@@ -364,7 +306,7 @@ export default function EntryPage() {
             <option>パーカッション</option>
           </select>
           <select name="level2" value={form.level2} onChange={handleChange} style={selectStyle}>
-            <option value="">演奏歴を選択（任意）</option>
+            <option value="">演奏歴を選択</option>
             <option>半年未満</option>
             <option>1年未満</option>
             <option>1〜3年</option>
@@ -373,44 +315,24 @@ export default function EntryPage() {
             <option>10年以上</option>
           </select>
 
-        {/* 参加可能日 */}
-        <h3
-          style={{
-            color: "var(--color-accent)",
-            fontWeight: "bold",
-            fontSize: "1.2rem",
-            borderLeft: "4px solid var(--color-accent)",
-            paddingLeft: "0.5rem",
-          }}
-        >
-          🗓️ 参加可能日について
-        </h3>
-        <textarea
-          name="availability"
-          value={form.availability}
-          onChange={handleChange}
-          placeholder="例）土曜は参加できません／10月下旬は不可 など"
-          style={{
-            padding: "1rem",
-            borderRadius: "8px",
-            border: "1px solid #555",
-            backgroundColor: "#111",
-            color: "white",
-            fontSize: "1rem",
-            minHeight: "100px",
-          }}
-        />
+          <h3 style={fieldTitle}>参加可能日について</h3>
+          <textarea
+            name="availability"
+            value={form.availability}
+            onChange={handleChange}
+            placeholder="例）土曜は参加できません／10月下旬は不可 など"
+            style={textareaStyle}
+          />
 
-          {/* メッセージ */}
+          <h3 style={fieldTitle}>メッセージ（任意）</h3>
           <textarea
             name="message"
             value={form.message}
             onChange={handleChange}
-            placeholder="メッセージ（任意）"
+            placeholder="補足事項やご質問などがあればご記入ください"
             style={textareaStyle}
           />
 
-          {/* reCAPTCHA */}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ReCAPTCHA
               sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
@@ -419,7 +341,6 @@ export default function EntryPage() {
             />
           </div>
 
-          {/* ボタン */}
           <button
             type="submit"
             style={buttonStyle}
@@ -441,11 +362,7 @@ export default function EntryPage() {
         </p>
       )}
 
-      {status && (
-        <p style={{ marginTop: "1rem", textAlign: "center", color: "gray" }}>
-          {status}
-        </p>
-      )}
+      {status && <p style={{ marginTop: "1rem", textAlign: "center", color: "gray" }}>{status}</p>}
     </section>
   );
 }
