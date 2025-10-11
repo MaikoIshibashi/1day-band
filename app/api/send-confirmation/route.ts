@@ -43,11 +43,17 @@ ${form.region}
 ■ 希望曲
 ${form.songs && form.songs.length > 0 ? form.songs.join(" / ") : "未選択"}
 
+■ 参加プラン
+${form.plan}
+
 ■ 第一希望
 ${form.part1}（演奏歴: ${form.level1}）
 
 ■ 第二希望
 ${form.part2 ? `${form.part2}（演奏歴: ${form.level2 || "未記入"}）` : "なし"}
+
+■ 参加可能日
+${form.availability || "特になし"}
 
 ■ メッセージ
 ${form.message || "なし"}

@@ -26,9 +26,12 @@ export default function EntryPage() {
     level1: "",
     part2: "",
     level2: "",
-    songs: [] as string[], // 追加
+    songs: [] as string[],
+    plan: "",
+    availability: "", // 🗓️ 追加
     message: "",
   });
+
 
   // ==== 最新イベントを取得 ====
   useEffect(() => {
@@ -126,16 +129,16 @@ export default function EntryPage() {
         {
           member_id: member.id,
           event_id: event.id,
-          nickname: form.name,   // ← 応募時のニックネームを保存
-          region: form.region,
           part1: form.part1,
           level1: form.level1,
           part2: form.part2,
           level2: form.level2,
-          songs: form.songs,
+          plan: form.plan,
+          availability: form.availability, // 🆕 ←ここを追加！
           message: form.message,
         },
       ]);
+
       if (entryError) throw entryError;
 
       // ==== 確認メール送信 ====
@@ -295,6 +298,36 @@ export default function EntryPage() {
               {song}
             </label>
           ))}
+          {/* 参加プラン */}
+          <h3
+            style={{
+              color: "var(--color-accent)",
+              fontWeight: "bold",
+              fontSize: "1.2rem",
+              borderLeft: "4px solid var(--color-accent)",
+              paddingLeft: "0.5rem",
+            }}
+          >
+            💰 参加プラン
+          </h3>
+          <select
+            name="plan"
+            value={form.plan}
+            onChange={handleChange}
+            required
+            style={{
+              padding: "1rem",
+              borderRadius: "8px",
+              border: "1px solid #555",
+              backgroundColor: "#111",
+              color: "white",
+              fontSize: "1rem",
+            }}
+          >
+            <option value="">参加プランを選択</option>
+            <option>スタジオのみ（¥5,000）</option>
+            <option>スタジオ＋打ち上げ（¥9,000）</option>
+          </select>
 
           {/* 第一希望パート */}
           <h3 style={{ color: "var(--color-accent)" }}>🎸 第一希望</h3>
@@ -339,6 +372,34 @@ export default function EntryPage() {
             <option>5〜10年</option>
             <option>10年以上</option>
           </select>
+
+        {/* 参加可能日 */}
+        <h3
+          style={{
+            color: "var(--color-accent)",
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            borderLeft: "4px solid var(--color-accent)",
+            paddingLeft: "0.5rem",
+          }}
+        >
+          🗓️ 参加可能日について
+        </h3>
+        <textarea
+          name="availability"
+          value={form.availability}
+          onChange={handleChange}
+          placeholder="例）土曜は参加できません／10月下旬は不可 など"
+          style={{
+            padding: "1rem",
+            borderRadius: "8px",
+            border: "1px solid #555",
+            backgroundColor: "#111",
+            color: "white",
+            fontSize: "1rem",
+            minHeight: "100px",
+          }}
+        />
 
           {/* メッセージ */}
           <textarea
