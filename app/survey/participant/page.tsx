@@ -5,15 +5,36 @@ import { useSearchParams } from "next/navigation";
 import Head from "next/head";
 import { supabase } from "@/lib/supabaseClient";
 
+// === 型定義 ===
+type Member = {
+  id: string;
+  name: string;
+  email: string;
+  xaccount: string;
+};
+
+type Question = {
+  id: string;
+  text: string;
+  input_type: string;
+  options?: string;
+};
+
+type Survey = {
+  id: string;
+  title: string;
+};
+
+// === ページコンポーネント ===
 export default function ParticipantSurveyPage() {
   const SURVEY_ID = "fe0aa4ba-03f3-4a41-b0fb-0fb1edc475fc";
   const searchParams = useSearchParams();
   const memberId = searchParams.get("member_id");
 
-  const [survey, setSurvey] = useState<any>(null);
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [survey, setSurvey] = useState<Survey | null>(null);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [member, setMember] = useState<any>(null);
+  const [member, setMember] = useState<Member | null>(null);
   const [status, setStatus] = useState("");
 
   // ==== メンバー情報を取得 ====
@@ -60,8 +81,8 @@ export default function ParticipantSurveyPage() {
           .eq("survey_id", SURVEY_ID)
           .order("order_no", { ascending: true });
 
-        setSurvey(surveyData);
-        setQuestions(questionData || []);
+        setSurvey(surveyData as Survey);
+        setQuestions((questionData as Question[]) || []);
       } catch (err) {
         console.error(err);
         setStatus("アンケートの読み込みに失敗しました。");
@@ -77,12 +98,12 @@ export default function ParticipantSurveyPage() {
   };
 
   // ==== 送信 ====
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("送信中...");
 
     try {
-      // ==== 回答をSupabaseに保存 ====
+      // 回答をSupabaseに保存
       const payload = Object.entries(answers).map(([qid, value]) => ({
         survey_id: SURVEY_ID,
         question_id: qid,
@@ -93,7 +114,7 @@ export default function ParticipantSurveyPage() {
       const { error } = await supabase.from("responses").insert(payload);
       if (error) throw error;
 
-      // ==== メール送信 ====
+      // メール送信
       if (member?.email) {
         const mailRes = await fetch("/api/send-final-confirmation", {
           method: "POST",
@@ -117,6 +138,7 @@ export default function ParticipantSurveyPage() {
     }
   };
 
+  // ==== 読み込み中 ====
   if (!survey) {
     return (
       <section style={{ padding: "4rem", textAlign: "center", color: "white" }}>
@@ -144,7 +166,7 @@ export default function ParticipantSurveyPage() {
           {survey.title || "参加者アンケート"}
         </h1>
 
-        {/* ✅ メンバー情報（確認用） */}
+        {/* ✅ メンバー情報表示 */}
         {member && (
           <div
             style={{
@@ -161,6 +183,7 @@ export default function ParticipantSurveyPage() {
           </div>
         )}
 
+        {/* 📝 フォーム本体 */}
         <form
           onSubmit={handleSubmit}
           style={{
@@ -230,7 +253,7 @@ export default function ParticipantSurveyPage() {
                   }}
                 >
                   <option value="">選択してください</option>
-                  {q.options?.split(",").map((opt: string) => (
+                  {q.options?.split(",").map((opt) => (
                     <option key={opt.trim()}>{opt.trim()}</option>
                   ))}
                 </select>
