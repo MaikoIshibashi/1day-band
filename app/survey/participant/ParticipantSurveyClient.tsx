@@ -1,44 +1,25 @@
-// /app/survey/participant/ParticipantSurveyClient.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Head from "next/head";
 import { supabase } from "@/lib/supabaseClient";
 
-type Member = {
-  id: string;
-  name: string;
-  email: string;
-  xaccount: string;
-};
-
-type Question = {
-  id: string;
-  text: string;
-  input_type: string;
-  options?: string;
-};
-
-type Survey = {
-  id: string;
-  title: string;
-};
-
-export default function ParticipantSurveyClient() {
+function ParticipantSurveyClient() {
   const SURVEY_ID = "fe0aa4ba-03f3-4a41-b0fb-0fb1edc475fc";
   const searchParams = useSearchParams();
   const memberId = searchParams.get("member_id");
 
-  const [survey, setSurvey] = useState<Survey | null>(null);
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [survey, setSurvey] = useState<any>(null);
+  const [questions, setQuestions] = useState<any[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [member, setMember] = useState<Member | null>(null);
+  const [member, setMember] = useState<any>(null);
   const [status, setStatus] = useState("");
 
-  // メンバー情報
+  // ==== メンバー情報を取得 ====
   useEffect(() => {
     if (!memberId) return;
+
     const fetchMember = async () => {
       const { data, error } = await supabase
         .from("members")
@@ -58,10 +39,11 @@ export default function ParticipantSurveyClient() {
         "ニックネーム（自動入力または確認のみ）": data.name || "",
       }));
     };
+
     fetchMember();
   }, [memberId]);
 
-  // アンケート情報
+  // ==== アンケート設問を取得 ====
   useEffect(() => {
     const fetchSurvey = async () => {
       try {
@@ -77,20 +59,22 @@ export default function ParticipantSurveyClient() {
           .eq("survey_id", SURVEY_ID)
           .order("order_no", { ascending: true });
 
-        setSurvey(surveyData as Survey);
-        setQuestions((questionData as Question[]) || []);
+        setSurvey(surveyData);
+        setQuestions(questionData || []);
       } catch (err) {
         console.error(err);
         setStatus("アンケートの読み込みに失敗しました。");
       }
     };
+
     fetchSurvey();
   }, []);
 
-  const handleChange = (qid: string, value: string) =>
+  const handleChange = (qid: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [qid]: value }));
+  };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("送信中...");
 
@@ -105,19 +89,6 @@ export default function ParticipantSurveyClient() {
       const { error } = await supabase.from("responses").insert(payload);
       if (error) throw error;
 
-      // メール送信
-      if (member?.email) {
-        await fetch("/api/send-final-confirmation", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: member.name,
-            email: member.email,
-            xaccount: member.xaccount,
-          }),
-        });
-      }
-
       setStatus("ご回答ありがとうございました！");
     } catch (err) {
       console.error(err);
@@ -125,7 +96,14 @@ export default function ParticipantSurveyClient() {
     }
   };
 
-  if (!survey) return <p style={{ color: "white" }}>読み込み中...</p>;
+  // ==== タイトル整形 ====
+  const getFormattedTitle = (rawTitle: string | null) => {
+    if (!rawTitle) return "参加者アンケート";
+    if (rawTitle.includes("CONFIRMED")) return "参加確定アンケート";
+    if (rawTitle.includes("END")) return "イベント終了アンケート";
+    if (rawTitle.includes("ENTRY")) return "エントリーアンケート";
+    return "アンケート";
+  };
 
   return (
     <>
@@ -142,9 +120,10 @@ export default function ParticipantSurveyClient() {
             textAlign: "center",
           }}
         >
-          {survey.title || "参加者アンケート"}
+          {getFormattedTitle(survey?.title)}
         </h1>
 
+        {/* ✅ メンバー情報 */}
         {member && (
           <div
             style={{
@@ -230,10 +209,39 @@ export default function ParticipantSurveyClient() {
                   }}
                 >
                   <option value="">選択してください</option>
-                  {q.options?.split(",").map((opt) => (
+                  {q.options?.split(",").map((opt: string) => (
                     <option key={opt.trim()}>{opt.trim()}</option>
                   ))}
                 </select>
+              )}
+
+              {/* ⚠️ 注意事項の前に共通文挿入 */}
+              {q.text.includes("注意事項") && (
+                <div
+                  style={{
+                    background: "#111",
+                    padding: "1rem",
+                    marginBottom: "1rem",
+                    borderRadius: "8px",
+                    border: "1px solid #444",
+                    color: "#ddd",
+                  }}
+                >
+                  <h3
+                    style={{
+                      color: "#b57cff",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    📘 注意事項
+                  </h3>
+                  <ul style={{ lineHeight: "1.8", marginLeft: "1rem" }}>
+                    <li>参加費は事前支払いとなります。</li>
+                    <li>キャンセルは原則7日前までにご連絡ください。</li>
+                    <li>撮影した映像・写真はYouTube等で公開される場合があります。</li>
+                    <li>当日体調がすぐれない場合は無理せず欠席のご連絡をお願いいたします。</li>
+                  </ul>
+                </div>
               )}
             </div>
           ))}
@@ -262,5 +270,13 @@ export default function ParticipantSurveyClient() {
         )}
       </section>
     </>
+  );
+}
+
+export default function ParticipantSurveyPage() {
+  return (
+    <Suspense fallback={<div style={{ color: "#fff", padding: "2rem" }}>読み込み中...</div>}>
+      <ParticipantSurveyClient />
+    </Suspense>
   );
 }
