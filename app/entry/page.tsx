@@ -11,6 +11,7 @@ export default function EntryPage() {
     start_date: string | null;
     end_date: string | null;
     event_date: string | null;
+    event_note?: string | null;
   };
 
   const [event, setEvent] = useState<EventData | null>(null);
@@ -32,6 +33,7 @@ export default function EntryPage() {
     message: "",
   });
 
+  // ==== 最新イベント取得 ====
   useEffect(() => {
     const fetchEvent = async () => {
       const { data, error } = await supabase
@@ -62,15 +64,16 @@ export default function EntryPage() {
       const selected = prev.songs.includes(song)
         ? prev.songs.filter((s) => s !== song)
         : [...prev.songs, song];
-      if (selected.length > 2) return prev; // 2曲まで制限
+      if (selected.length > 2) return prev; // 2曲まで
       return { ...prev, songs: selected };
     });
   };
 
+  // ==== Submit ====
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.name.trim() || !form.email.trim() || !form.xaccount.trim() || !form.region) {
+    if (!form.name || !form.email || !form.xaccount || !form.region) {
       setStatus("必須項目を入力してください。");
       return;
     }
@@ -90,6 +93,7 @@ export default function EntryPage() {
     setStatus("送信中...");
 
     try {
+      // メンバーを探す or 追加
       let { data: member } = await supabase
         .from("members")
         .select("id")
@@ -100,7 +104,11 @@ export default function EntryPage() {
         const { data: newMember, error: memberError } = await supabase
           .from("members")
           .insert([
-            { name: form.name, email: form.email, xaccount: form.xaccount },
+            {
+              name: form.name,
+              email: form.email,
+              xaccount: form.xaccount,
+            },
           ])
           .select()
           .single();
@@ -109,12 +117,15 @@ export default function EntryPage() {
         member = newMember;
       }
 
-      if (!member) throw new Error("メンバーを作成できませんでした");
       if (!event) {
         setStatus("イベント情報が取得できませんでした。");
         return;
       }
+      if (!member) {
+        throw new Error("メンバー情報が取得できませんでした。");
+      }
 
+      // entries 登録
       const { error: entryError } = await supabase.from("entries").insert([
         {
           member_id: member.id,
@@ -123,13 +134,14 @@ export default function EntryPage() {
           level1: form.level1,
           part2: form.part2,
           level2: form.level2,
-          plan: form.plan,
           availability: form.availability,
           message: form.message,
         },
       ]);
+
       if (entryError) throw entryError;
 
+      // メール送信
       const mailRes = await fetch("/api/send-confirmation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -149,6 +161,7 @@ export default function EntryPage() {
     }
   };
 
+  // ==== 未取得時 ====
   if (!event) {
     return (
       <section style={{ padding: "4rem", textAlign: "center", color: "white" }}>
@@ -157,6 +170,7 @@ export default function EntryPage() {
     );
   }
 
+  // ==== ステータス判定 ====
   const now = new Date();
   const isOpen =
     event.start_date &&
@@ -164,13 +178,24 @@ export default function EntryPage() {
     now >= new Date(event.start_date) &&
     now <= new Date(event.end_date);
 
-  const fieldTitle = {
-    color: "var(--color-accent)",
-    fontWeight: "bold",
-    fontSize: "1.2rem",
-    borderLeft: "4px solid var(--color-accent)",
-    paddingLeft: "0.5rem",
-  } as React.CSSProperties;
+  const statusText = isOpen
+    ? "募集中"
+    : event.end_date && now > new Date(event.end_date)
+    ? "受付終了"
+    : "準備中";
+
+  const eventDateText = event.event_date
+    ? new Date(event.event_date).toLocaleDateString("ja-JP")
+    : event.event_note || "調整中";
+
+  // ==== 共通スタイル ====
+  const boxStyle = {
+    border: "1px solid var(--color-accent)",
+    borderRadius: "10px",
+    padding: "1.5rem",
+    textAlign: "center" as const,
+    minWidth: "200px",
+  };
 
   const inputStyle = {
     padding: "1rem",
@@ -179,22 +204,17 @@ export default function EntryPage() {
     backgroundColor: "#111",
     color: "white",
     fontSize: "1rem",
-    width: "100%",
   } as React.CSSProperties;
 
   const selectStyle = { ...inputStyle };
-  const textareaStyle = { ...inputStyle, minHeight: "120px" };
+  const textareaStyle = { ...inputStyle, minHeight: "100px" };
   const buttonStyle = {
-    padding: "1rem",
-    borderRadius: "8px",
+    ...inputStyle,
     border: "1px solid var(--color-accent)",
-    backgroundColor: "#111",
     color: "var(--color-accent)",
-    fontSize: "1.1rem",
-    fontWeight: "bold",
     cursor: "pointer",
-    transition: "all 0.2s ease",
-  } as React.CSSProperties;
+    fontWeight: "bold",
+  };
 
   return (
     <section
@@ -206,6 +226,7 @@ export default function EntryPage() {
         lineHeight: 1.8,
       }}
     >
+      {/* タイトル */}
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
         <h1
           style={{
@@ -213,7 +234,6 @@ export default function EntryPage() {
             fontWeight: "bold",
             color: "var(--color-accent)",
             textTransform: "uppercase",
-            letterSpacing: "0.1em",
             borderBottom: "2px solid var(--color-accent)",
             display: "inline-block",
             paddingBottom: "0.5rem",
@@ -221,6 +241,36 @@ export default function EntryPage() {
         >
           {event.name} Entry
         </h1>
+      </div>
+
+      {/* 開催情報カード */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "1.5rem",
+          flexWrap: "wrap",
+          marginBottom: "3rem",
+        }}
+      >
+        <div style={boxStyle}>
+          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>開催予定日</p>
+          <p style={{ fontSize: "1.3rem", fontWeight: "bold" }}>{eventDateText}</p>
+        </div>
+        <div style={boxStyle}>
+          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>エントリー期間</p>
+          <p>
+            {event.start_date && event.end_date
+              ? `${new Date(event.start_date).toLocaleDateString("ja-JP")} 〜 ${new Date(
+                  event.end_date
+                ).toLocaleDateString("ja-JP")}`
+              : "調整中"}
+          </p>
+        </div>
+        <div style={boxStyle}>
+          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>ステータス</p>
+          <p style={{ fontSize: "1.2rem", fontWeight: "bold" }}>{statusText}</p>
+        </div>
       </div>
 
       {isOpen ? (
@@ -231,91 +281,61 @@ export default function EntryPage() {
             margin: "0 auto",
             display: "flex",
             flexDirection: "column",
-            gap: "1.5rem",
+            gap: "2rem",
           }}
         >
+          {/* 名前・連絡 */}
           <input name="name" value={form.name} onChange={handleChange} placeholder="ニックネーム" required style={inputStyle} />
           <input name="email" value={form.email} onChange={handleChange} type="email" placeholder="メールアドレス" required style={inputStyle} />
           <input name="xaccount" value={form.xaccount} onChange={handleChange} placeholder="Xアカウント（@なし）" required style={inputStyle} />
 
-          <h3 style={fieldTitle}>地域</h3>
+          {/* 地域 */}
+          <h3 style={{ color: "var(--color-accent)" }}>地域</h3>
           <select name="region" value={form.region} onChange={handleChange} required style={selectStyle}>
             <option value="">地域を選択</option>
-            <option>北海道</option>
-            <option>東北</option>
-            <option>関東</option>
-            <option>中部</option>
-            <option>近畿</option>
-            <option>中国</option>
-            <option>四国</option>
-            <option>九州</option>
-            <option>沖縄</option>
+            <option>北海道</option><option>東北</option><option>関東</option>
+            <option>中部</option><option>近畿</option><option>中国</option>
+            <option>四国</option><option>九州</option><option>沖縄</option>
           </select>
 
-          <h3 style={fieldTitle}>希望曲（2曲選択）</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            {["SOUL LOVE", "HOWEVER", "サバイバル"].map((song) => (
-              <label key={song} style={{ cursor: "pointer" }}>
-                <input
-                  type="checkbox"
-                  checked={form.songs.includes(song)}
-                  onChange={() => handleSongChange(song)}
-                />{" "}
-                {song}
-              </label>
-            ))}
-          </div>
+          {/* 希望曲 */}
+          <h3 style={{ color: "var(--color-accent)" }}>希望曲（2曲選択）</h3>
+          {["SOUL LOVE", "HOWEVER", "サバイバル"].map((song) => (
+            <label key={song} style={{ display: "block" }}>
+              <input type="checkbox" checked={form.songs.includes(song)} onChange={() => handleSongChange(song)} /> {song}
+            </label>
+          ))}
 
-          <h3 style={fieldTitle}>参加プラン</h3>
-          <select name="plan" value={form.plan} onChange={handleChange} required style={selectStyle}>
-            <option value="">参加プランを選択</option>
-            <option>スタジオのみ（¥5,000）</option>
-            <option>スタジオ＋打ち上げ（¥9,000）</option>
-          </select>
-
-          <h3 style={fieldTitle}>第一希望パート</h3>
+          {/* 希望パート */}
+          <h3 style={{ color: "var(--color-accent)" }}>第一希望パート</h3>
           <select name="part1" value={form.part1} onChange={handleChange} required style={selectStyle}>
             <option value="">第一希望パートを選択</option>
-            <option>ギター</option>
-            <option>ベース</option>
-            <option>ドラム</option>
-            <option>キーボード</option>
-            <option>ボーカル</option>
-            <option>コーラス</option>
-            <option>パーカッション</option>
+            <option>ギター</option><option>ベース</option><option>ドラム</option>
+            <option>キーボード</option><option>ボーカル</option>
+            <option>コーラス</option><option>パーカッション</option>
           </select>
           <select name="level1" value={form.level1} onChange={handleChange} required style={selectStyle}>
             <option value="">演奏歴を選択</option>
-            <option>半年未満</option>
-            <option>1年未満</option>
-            <option>1〜3年</option>
-            <option>3〜5年</option>
-            <option>5〜10年</option>
-            <option>10年以上</option>
+            <option>半年未満</option><option>1年未満</option><option>1〜3年</option>
+            <option>3〜5年</option><option>5〜10年</option><option>10年以上</option>
           </select>
 
-          <h3 style={fieldTitle}>第二希望パート（任意）</h3>
+          {/* 第二希望 */}
+          <h3 style={{ color: "var(--color-accent)" }}>第二希望パート</h3>
           <select name="part2" value={form.part2} onChange={handleChange} style={selectStyle}>
-            <option value="">第二希望パートを選択</option>
-            <option>ギター</option>
-            <option>ベース</option>
-            <option>ドラム</option>
-            <option>キーボード</option>
-            <option>ボーカル</option>
-            <option>コーラス</option>
-            <option>パーカッション</option>
+            <option value="">第二希望パートを選択（任意）</option>
+            <option>ギター</option><option>ベース</option><option>ドラム</option>
+            <option>キーボード</option><option>ボーカル</option>
+            <option>コーラス</option><option>パーカッション</option>
           </select>
           <select name="level2" value={form.level2} onChange={handleChange} style={selectStyle}>
-            <option value="">演奏歴を選択</option>
-            <option>半年未満</option>
-            <option>1年未満</option>
-            <option>1〜3年</option>
-            <option>3〜5年</option>
-            <option>5〜10年</option>
-            <option>10年以上</option>
+            <option value="">演奏歴を選択（任意）</option>
+            <option>半年未満</option><option>1年未満</option><option>1〜3年</option>
+            <option>3〜5年</option><option>5〜10年</option><option>10年以上</option>
           </select>
 
-          <h3 style={fieldTitle}>参加可能日について</h3>
+          {/* 参加可能日 */}
+          <h3 style={{ color: "var(--color-accent)" }}>参加可能日</h3>
           <textarea
             name="availability"
             value={form.availability}
@@ -324,19 +344,20 @@ export default function EntryPage() {
             style={textareaStyle}
           />
 
-          <h3 style={fieldTitle}>メッセージ（任意）</h3>
+          {/* メッセージ */}
           <textarea
             name="message"
             value={form.message}
             onChange={handleChange}
-            placeholder="補足事項やご質問などがあればご記入ください"
+            placeholder="メッセージ（任意）"
             style={textareaStyle}
           />
 
+          {/* reCAPTCHA */}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ReCAPTCHA
               sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
-              onChange={(token: string | null) => setCaptchaToken(token ?? "")}
+              onChange={(token) => setCaptchaToken(token ?? "")}
               theme="dark"
             />
           </div>
@@ -362,7 +383,11 @@ export default function EntryPage() {
         </p>
       )}
 
-      {status && <p style={{ marginTop: "1rem", textAlign: "center", color: "gray" }}>{status}</p>}
+      {status && (
+        <p style={{ marginTop: "1rem", textAlign: "center", color: "gray" }}>
+          {status}
+        </p>
+      )}
     </section>
   );
 }
