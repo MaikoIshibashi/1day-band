@@ -5,15 +5,37 @@ import { useSearchParams } from "next/navigation";
 import Head from "next/head";
 import { supabase } from "@/lib/supabaseClient";
 
+// 型定義を追加（ここがポイント）
+interface Survey {
+  id: string;
+  title: string;
+}
+
+interface Question {
+  id: string;
+  text: string;
+  input_type: "text" | "textarea" | "select";
+  options?: string;
+  order_no: number;
+}
+
+interface Member {
+  id: string;
+  name: string;
+  email: string;
+  xaccount: string;
+}
+
 function ParticipantSurveyClient() {
   const SURVEY_ID = "fe0aa4ba-03f3-4a41-b0fb-0fb1edc475fc";
   const searchParams = useSearchParams();
   const memberId = searchParams.get("member_id");
 
-  const [survey, setSurvey] = useState<any>(null);
-  const [questions, setQuestions] = useState<any[]>([]);
+  // ✅ any を具体的な型に置き換え
+  const [survey, setSurvey] = useState<Survey | null>(null);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [member, setMember] = useState<any>(null);
+  const [member, setMember] = useState<Member | null>(null);
   const [status, setStatus] = useState("");
 
   // ==== メンバー情報を取得 ====
@@ -33,11 +55,13 @@ function ParticipantSurveyClient() {
         return;
       }
 
-      setMember(data);
-      setAnswers((prev) => ({
-        ...prev,
-        "ニックネーム（自動入力または確認のみ）": data.name || "",
-      }));
+      if (data) {
+        setMember(data as Member);
+        setAnswers((prev) => ({
+          ...prev,
+          "ニックネーム（自動入力または確認のみ）": data.name || "",
+        }));
+      }
     };
 
     fetchMember();
@@ -59,8 +83,8 @@ function ParticipantSurveyClient() {
           .eq("survey_id", SURVEY_ID)
           .order("order_no", { ascending: true });
 
-        setSurvey(surveyData);
-        setQuestions(questionData || []);
+        if (surveyData) setSurvey(surveyData as Survey);
+        if (questionData) setQuestions(questionData as Question[]);
       } catch (err) {
         console.error(err);
         setStatus("アンケートの読み込みに失敗しました。");
@@ -96,7 +120,6 @@ function ParticipantSurveyClient() {
     }
   };
 
-  // ==== タイトル整形 ====
   const getFormattedTitle = (rawTitle: string | null) => {
     if (!rawTitle) return "参加者アンケート";
     if (rawTitle.includes("CONFIRMED")) return "参加確定アンケート";
@@ -123,7 +146,6 @@ function ParticipantSurveyClient() {
           {getFormattedTitle(survey?.title)}
         </h1>
 
-        {/* ✅ メンバー情報 */}
         {member && (
           <div
             style={{
@@ -209,39 +231,10 @@ function ParticipantSurveyClient() {
                   }}
                 >
                   <option value="">選択してください</option>
-                  {q.options?.split(",").map((opt: string) => (
+                  {q.options?.split(",").map((opt) => (
                     <option key={opt.trim()}>{opt.trim()}</option>
                   ))}
                 </select>
-              )}
-
-              {/* ⚠️ 注意事項の前に共通文挿入 */}
-              {q.text.includes("注意事項") && (
-                <div
-                  style={{
-                    background: "#111",
-                    padding: "1rem",
-                    marginBottom: "1rem",
-                    borderRadius: "8px",
-                    border: "1px solid #444",
-                    color: "#ddd",
-                  }}
-                >
-                  <h3
-                    style={{
-                      color: "#b57cff",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    📘 注意事項
-                  </h3>
-                  <ul style={{ lineHeight: "1.8", marginLeft: "1rem" }}>
-                    <li>参加費は事前支払いとなります。</li>
-                    <li>キャンセルは原則7日前までにご連絡ください。</li>
-                    <li>撮影した映像・写真はYouTube等で公開される場合があります。</li>
-                    <li>当日体調がすぐれない場合は無理せず欠席のご連絡をお願いいたします。</li>
-                  </ul>
-                </div>
               )}
             </div>
           ))}
@@ -275,7 +268,9 @@ function ParticipantSurveyClient() {
 
 export default function ParticipantSurveyPage() {
   return (
-    <Suspense fallback={<div style={{ color: "#fff", padding: "2rem" }}>読み込み中...</div>}>
+    <Suspense
+      fallback={<div style={{ color: "#fff", padding: "2rem" }}>読み込み中...</div>}
+    >
       <ParticipantSurveyClient />
     </Suspense>
   );
