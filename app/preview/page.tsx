@@ -46,7 +46,7 @@ export default function PreviewPage() {
   <p style={{ marginTop: "0.5rem", color: "gray" }}>🟣 募集開始前</p>
   {/* ↓ カード内に配置 */}
   <p style={{ fontSize: "0.95rem", color: "#aaa", marginTop: "1rem" }}>
-    公開までしばらくお待ちください。。
+    エントリー開始までしばらくお待ちください。。
   </p>
   </div>
 
@@ -85,7 +85,7 @@ export default function PreviewPage() {
           開催は春と秋の年2回。<br />全国様々な場所で開催し
           音楽仲間と出会う機会を提供します。
           <br />
-          演奏曲はGLAYの中から2曲。こちらで選曲します！
+          演奏曲はGLAYの中から2曲を選曲します！
         </p>
         <p
           style={{
@@ -334,7 +334,7 @@ export default function PreviewPage() {
 {/* Voices */}
 <section
   id="voices"
-  className="reveal scroll-mt-20" 
+  className="reveal scroll-mt-20"
   style={{
     padding: "4rem",
     textAlign: "center",
@@ -350,6 +350,7 @@ export default function PreviewPage() {
   >
     参加者の声
   </h2>
+
   <div
     style={{
       display: "grid",
@@ -362,22 +363,46 @@ export default function PreviewPage() {
     {[
       {
         comment:
-          "バンドで演奏することが、こんなにも楽しいものなんだって、貴重な経験ができてとても幸せです。普段は応援する側だけど、メンバーとして参加する側のバンドにも沼りそうです！",
+          "バンドで演奏することが、こんなにも楽しいものなんだって。\n貴重な経験ができてとても幸せです。\n普段は応援する側だけど、メンバーとして参加する側のバンドにも沼りそうです！",
       },
       {
         comment:
-          "楽しいの一言でした！5時間長いかなと思ったけど、あっという間でした！",
+          "楽しいの一言でした！\n5時間長いかなと思ったけど、あっという間でした！",
       },
       {
         comment:
-          "参加が決まってから目標を持って練習に取り組めたのは良かったです。準備期間も含めて、とても充実した時間を過ごすことができました。",
+          "参加が決まってから目標を持って練習に取り組めたのは良かったです。\n準備期間も含めて、とても充実した時間を過ごすことができました。",
       },
       {
         comment:
-          "練習はじめて『できるわけない』と思ったけど、日々修行して少しずつ自信がついた。本番はみんなと演奏できてゾクゾクした！また参加したいです！",
+          "練習はじめて『できるわけない』と思ったけど、\n日々修行して少しずつ自信がついた。\n本番はみんなと演奏できてゾクゾクした！\nまた参加したいです！",
       },
       {
         comment: "楽しかったの一言に尽きますねん🐸✨",
+      },
+      {
+        comment:
+          "初参加で不安もありましたが、皆さんフレンドリーに接してくださって、\nスタジオから打ち上げまでとても楽しく過ごすことができました。",
+      },
+      {
+        comment:
+          "各々の練習期間も含め、すごく楽しかったです！\nまた機会あれば参加したいです！\n準備等いろいろ大変かと思いますが、引き続きの開催楽しみにしています！",
+      },
+      {
+        comment:
+          "具体的な目標があると練習にも身が入るんですね。\n当日も本当に楽しくてかけがえのない経験＆思い出になりました！\n自分にできるかな？という不安もありましたけど、参加出来て良かったです。\nまたやりたいー！",
+      },
+      {
+        comment:
+          "MYAIMYAIさんのお人柄で全国から集まる皆さんは素敵な方たちばかり！\nそんな皆さんとスタジオで曲を演る感動！\nこりゃ行くしかないぜ👍\n本当に楽しく素敵なイベントなので、興味がある方は是非！",
+      },
+      {
+        comment:
+          "2ndに引き続き参加させていただきました！\n3rdもとってもとっても楽しかったです✨\n今回もメンバーの皆さまのお人柄が良く、当日までのやり取りや練習が楽しかったです！\n中間イベントがあったことで、より緊張感を保って練習できたし、当日へのワクワクが増しました☺️\n皆での演奏は当日だけですが、参加が決まったその日からバンドメンバーとして楽しませてもらっていたんだと、終わってからしみじみ感じました。\n貴重な経験をさせてもらえて感謝しています！\nありがとうございました😊✨",
+      },
+      {
+        comment:
+          "2ndに続き2回目の参加でした。\n準備段階から練習経過を報告し合ったりして楽しく練習できました。\n共通の目標があったので緊張感を持ちつつ、モチベ高く取り組めたのも良かったです。\n当日は初対面の方々もいましたが、皆様いい方々ですぐに馴染めて楽しく音合わせできました。\n是非また参加させていただきたいです！",
       },
     ].map((voice, i) => (
       <div
@@ -389,14 +414,16 @@ export default function PreviewPage() {
           padding: "1.5rem",
           textAlign: "left",
           fontSize: "0.95rem",
-          lineHeight: "1.6",
+          lineHeight: "1.7",
+          color: "#ddd",
         }}
       >
-        <p style={{ margin: 0 }}>{voice.comment}</p>
+        <p style={{ margin: 0, whiteSpace: "pre-line" }}>{voice.comment}</p>
       </div>
     ))}
   </div>
 </section>
+
 
 
 {/* Events */}
@@ -415,10 +442,10 @@ export default function PreviewPage() {
 
   {/* 第3回 */}
   <h3 style={{ marginTop: "2rem", color: "var(--color-accent)" }}>
-    3rd in Nagoya (2025/10予定)
+    3rd in Nagoya (2025/10)
   </h3>
   <p style={{ marginTop: "0.5rem", color: "gray" }}>
-    本番は 2025年10月12日（日）に開催予定です。
+    本番開始2ヶ月前の中間イベント！みんなでコラボしました♪
   </p>
   <div
     style={{
@@ -432,7 +459,7 @@ export default function PreviewPage() {
     <iframe
       width="100%"
       height="200"
-      src="https://www.youtube.com/embed/YrbfEhGFHXI"
+      src="https://www.youtube.com/embed/ictKQgug-u8"
       title="第3回 中期イベント SOUL LOVE"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -442,7 +469,7 @@ export default function PreviewPage() {
     <iframe
       width="100%"
       height="200"
-      src="https://www.youtube.com/embed/GvaX2NYzXqo"
+      src="https://www.youtube.com/embed/Nt3dJAjcwIo"
       title="第3回 中期イベント グロリアス"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -467,7 +494,7 @@ export default function PreviewPage() {
     <iframe
       width="100%"
       height="200"
-      src="https://www.youtube.com/embed/aCAz5yXyz7I"
+      src="https://www.youtube.com/embed/abAIzFkSw70?si=OclTO-xfQL4w5Pel"
       title="第2回 動画1"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -477,7 +504,7 @@ export default function PreviewPage() {
     <iframe
       width="100%"
       height="200"
-      src="https://www.youtube.com/embed/YLsxuxlOw68"
+      src="https://www.youtube.com/embed/2Eyq1Zpj-HU?si=cclbXvtWHWuuyOTa"
       title="第2回 動画2"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -502,7 +529,7 @@ export default function PreviewPage() {
     <iframe
       width="100%"
       height="200"
-      src="https://www.youtube.com/embed/S2MMTYCTmdI"
+      src="https://www.youtube.com/embed/J9OJbL2975s?si=JRMZVtt5DUOCn01C"
       title="第1回 動画1"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -512,7 +539,7 @@ export default function PreviewPage() {
     <iframe
       width="100%"
       height="200"
-      src="https://www.youtube.com/embed/FuO-1i5C7es"
+      src="https://www.youtube.com/embed/eci_dTHXkFU?si=gMlYkLYvxu9mdyFi"
       title="第1回 動画2"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -522,7 +549,7 @@ export default function PreviewPage() {
     <iframe
       width="100%"
       height="200"
-      src="https://www.youtube.com/embed/aRuAYXW9Dpk"
+      src="https://www.youtube.com/embed/BjWMdT3oUFI?si=-rPFK7hXMiXrrDyn"
       title="第1回 動画3"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
