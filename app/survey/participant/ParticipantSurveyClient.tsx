@@ -5,17 +5,17 @@ import { useSearchParams } from "next/navigation";
 import Head from "next/head";
 import { supabase } from "@/lib/supabaseClient";
 
-// 型定義を追加（ここがポイント）
+// ===== 型定義 =====
 interface Survey {
   id: string;
-  title: string;
+  title: string | null;
 }
 
 interface Question {
   id: string;
   text: string;
   input_type: "text" | "textarea" | "select";
-  options?: string;
+  options?: string | null;
   order_no: number;
 }
 
@@ -31,12 +31,12 @@ function ParticipantSurveyClient() {
   const searchParams = useSearchParams();
   const memberId = searchParams.get("member_id");
 
-  // ✅ any を具体的な型に置き換え
+  // ==== useState（型完全定義） ====
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [member, setMember] = useState<Member | null>(null);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState<string>("");
 
   // ==== メンバー情報を取得 ====
   useEffect(() => {
@@ -49,19 +49,24 @@ function ParticipantSurveyClient() {
         .eq("id", memberId)
         .single();
 
-      if (error) {
+      if (error || !data) {
         console.error("メンバー情報取得エラー:", error);
         setStatus("メンバー情報が取得できませんでした。");
         return;
       }
 
-      if (data) {
-        setMember(data as Member);
-        setAnswers((prev) => ({
-          ...prev,
-          "ニックネーム（自動入力または確認のみ）": data.name || "",
-        }));
-      }
+      const typedData: Member = {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        xaccount: data.xaccount,
+      };
+
+      setMember(typedData);
+      setAnswers((prev) => ({
+        ...prev,
+        "ニックネーム（自動入力または確認のみ）": data.name || "",
+      }));
     };
 
     fetchMember();
@@ -71,22 +76,26 @@ function ParticipantSurveyClient() {
   useEffect(() => {
     const fetchSurvey = async () => {
       try {
-        const { data: surveyData } = await supabase
+        const { data: surveyData, error: surveyErr } = await supabase
           .from("surveys")
           .select("*")
           .eq("id", SURVEY_ID)
           .single();
 
-        const { data: questionData } = await supabase
+        if (surveyErr) throw surveyErr;
+
+        const { data: questionData, error: questionErr } = await supabase
           .from("questions")
           .select("*")
           .eq("survey_id", SURVEY_ID)
           .order("order_no", { ascending: true });
 
-        if (surveyData) setSurvey(surveyData as Survey);
-        if (questionData) setQuestions(questionData as Question[]);
+        if (questionErr) throw questionErr;
+
+        setSurvey(surveyData as Survey);
+        setQuestions((questionData || []) as Question[]);
       } catch (err) {
-        console.error(err);
+        console.error("アンケート取得エラー:", err);
         setStatus("アンケートの読み込みに失敗しました。");
       }
     };
@@ -94,11 +103,13 @@ function ParticipantSurveyClient() {
     fetchSurvey();
   }, []);
 
+  // ==== 入力変更 ====
   const handleChange = (qid: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [qid]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // ==== 送信 ====
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("送信中...");
 
@@ -120,7 +131,8 @@ function ParticipantSurveyClient() {
     }
   };
 
-  const getFormattedTitle = (rawTitle: string | null) => {
+  // ==== タイトル整形 ====
+  const getFormattedTitle = (rawTitle?: string | null): string => {
     if (!rawTitle) return "参加者アンケート";
     if (rawTitle.includes("CONFIRMED")) return "参加確定アンケート";
     if (rawTitle.includes("END")) return "イベント終了アンケート";
@@ -128,13 +140,14 @@ function ParticipantSurveyClient() {
     return "アンケート";
   };
 
+  // ==== JSX ====
   return (
     <>
       <Head>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
 
-      <section style={{ padding: "4rem", background: "#000", color: "white" }}>
+      <section style={{ padding: "4rem", background: "#000", color: "#fff" }}>
         <h1
           style={{
             fontSize: "2rem",
@@ -146,6 +159,7 @@ function ParticipantSurveyClient() {
           {getFormattedTitle(survey?.title)}
         </h1>
 
+        {/* ✅ メンバー情報 */}
         {member && (
           <div
             style={{
@@ -162,6 +176,7 @@ function ParticipantSurveyClient() {
           </div>
         )}
 
+        {/* ✅ アンケートフォーム */}
         <form
           onSubmit={handleSubmit}
           style={{
@@ -231,7 +246,7 @@ function ParticipantSurveyClient() {
                   }}
                 >
                   <option value="">選択してください</option>
-                  {q.options?.split(",").map((opt) => (
+                  {(q.options?.split(",") || []).map((opt) => (
                     <option key={opt.trim()}>{opt.trim()}</option>
                   ))}
                 </select>
@@ -269,7 +284,9 @@ function ParticipantSurveyClient() {
 export default function ParticipantSurveyPage() {
   return (
     <Suspense
-      fallback={<div style={{ color: "#fff", padding: "2rem" }}>読み込み中...</div>}
+      fallback={
+        <div style={{ color: "#fff", padding: "2rem" }}>読み込み中...</div>
+      }
     >
       <ParticipantSurveyClient />
     </Suspense>
