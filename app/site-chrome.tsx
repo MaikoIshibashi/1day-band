@@ -16,12 +16,16 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     return <main>{children}</main>;
   }
 
+  // 特定ページで非表示にしたい条件をまとめて定義
   const isSurveyPage = pathname.startsWith("/survey");
+  const isTopPage = pathname === "/"; // トップページ（準備中ページ）
+
+  const hideHeader = isSurveyPage || isTopPage;
 
   return (
     <>
-      {!isSurveyPage && <Header />}
-      {!isSurveyPage && <RevealOnScroll />}
+      {!hideHeader && <Header />}
+      {!hideHeader && <RevealOnScroll />}
       <main>{children}</main>
     </>
   );

@@ -211,10 +211,11 @@ export default function PreviewPage() {
 
   </div>
 </section>
+
 {/* Timeline */}
 <section
   id="timeline"
-  className="reveal scroll-mt-20" 
+  className="reveal scroll-mt-20"
   style={{
     padding: "4rem",
     backgroundColor: "#111",
@@ -232,7 +233,6 @@ export default function PreviewPage() {
     当日までの流れ
   </h2>
 
-  {/* タイムライン本体 */}
   <div
     style={{
       maxWidth: "700px",
@@ -255,13 +255,25 @@ export default function PreviewPage() {
     {[
       {
         title: "Entry Open",
-        note: "約5ヶ月前",
+        note: "本番約5ヶ月前",
         desc: "募集期間にエントリーページを公開。参加希望の方は当サイトより直接お申し込みください。",
       },
       {
         title: "Member Selection",
-        note: "約1週間後",
-        desc: "希望パートやバランスを考慮し、メンバーを決定。結果は公式メールでご案内します。",
+        note: "エントリー約1週間後",
+        desc: "希望パートや全体バランスを考慮してメンバーを決定。結果は公式メールにてご案内します。",
+      },
+      {
+        title: "Part Assignment & Score Creation",
+        note: "メンバー確定後",
+        desc: (
+          <>
+            同一パート希望者がいる場合は、希望難易度や全体のバランスを考慮してパート割りを行います。<br />
+            ドラム・ベース・ボーカルは基本1名体制（選考時に確定）<br />
+            複数人で構成されるパートについては、エントリー時のアンケート内容をもとに<br />
+            希望難易度や掛け持ち希望も踏まえて構成を調整します。
+          </>
+        ),
       },
       {
         title: "Practice Log & Updates",
@@ -270,7 +282,7 @@ export default function PreviewPage() {
       },
       {
         title: "Midpoint Event",
-        note: "約2ヶ月前",
+        note: "本番約2ヶ月前",
         desc: "任意参加の中間イベントで進捗確認やプチセッションを開催。",
       },
       {
@@ -280,7 +292,7 @@ export default function PreviewPage() {
       },
       {
         title: "After Party",
-        note: "任意参加",
+        note: "当日 ※任意参加",
         desc: "終了後に交流会。美味しい料理とお酒で音楽トークを楽しみましょう。",
       },
     ].map((step, i) => (
@@ -324,13 +336,20 @@ export default function PreviewPage() {
         </h3>
 
         {/* 説明 */}
-        <p style={{ margin: 0, lineHeight: "1.6", color: "#ddd" }}>
+        <p
+          style={{
+            margin: 0,
+            lineHeight: "1.6",
+            color: "#ddd",
+          }}
+        >
           {step.desc}
         </p>
       </div>
     ))}
   </div>
 </section>
+
 
 
 
@@ -685,6 +704,7 @@ export default function PreviewPage() {
     </div>
     </div> 
 </section>
+
 
     <Footer /> {/* ← 全ページ共通のフッター */}
 
