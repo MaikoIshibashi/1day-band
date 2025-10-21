@@ -2,6 +2,7 @@ import Link from "next/link";
 import Hero from "../components/Hero";
 import Reveal from "../components/Reveal"; // ← スクロールアニメーション
 import Footer from "../components/Footer"; // ←追加
+import RecentActivities from "../components/RecentActivities"; // ←これを追加！
 
 export default function PreviewPage() {
   return (
@@ -51,73 +52,72 @@ export default function PreviewPage() {
   </div>
 
 </section>
+{/* About */}
+<section
+  id="about"
+  className="reveal scroll-mt-20"
+  style={{
+    padding: "4rem",
+    textAlign: "center",
+    backgroundColor: "#111",
+  }}
+>
+  <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
+    プロジェクト概要
+  </h2>
 
-      {/* About */}
-      <section
-        id="about"
-        className="reveal scroll-mt-20" 
-        style={{
-          padding: "4rem",
-          textAlign: "center",
-          backgroundColor: "#111", // 濃いグレー
-        }}
-      >
-        <h2 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
-          プロジェクト概要
-        </h2>
-        <p
-          style={{
-            maxWidth: "650px",
-            margin: "1rem auto",
-            lineHeight: "1.8",
-          }}
-        >
-          音楽好きが集まりその日限りのバンドを結成してスタジオで演奏<br />
-          その様子を映像として残す企画です。
-        </p>
-        <p
-          style={{
-            maxWidth: "650px",
-            margin: "1rem auto",
-            lineHeight: "1.8",
-          }}
-        >
-          開催は春と秋の年2回。<br />全国様々な場所で開催し
-          音楽仲間と出会う機会を提供します。
-          <br />
-          演奏曲はGLAYの中から2曲を選曲します！
-        </p>
-        <p
-          style={{
-            maxWidth: "650px",
-            margin: "1rem auto",
-            lineHeight: "1.8",
-          }}
-        >
-          初心者からベテランまで、
-          音楽を楽しみたい気持ちがあれば大歓迎♪<br />
-          メンバーとは当日までグループDMでやりとり可能！<br />
-          当日は限られた時間で音を合わせ特別な1日をお楽しみください！
-        </p>
+  <p
+    style={{
+      maxWidth: "650px",
+      margin: "1rem auto",
+      lineHeight: "1.8",
+    }}
+  >
+    音楽好きが集まりその日限りのバンドを結成してスタジオで演奏。<br />
+    その様子を映像として残す企画です。
+  </p>
 
-        <a
-          href="https://note.com/1daystudioband"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-block",
-            marginTop: "1.5rem",
-            padding: "0.8rem 1.5rem",
-            borderRadius: "8px",
-            backgroundColor: "var(--color-accent)",
-            color: "white",
-            fontSize: "1rem",
-            textDecoration: "none",
-          }}
-        >
-          活動記録を note で見る
-        </a>
-      </section>
+  <p
+    style={{
+      maxWidth: "650px",
+      margin: "1rem auto",
+      lineHeight: "1.8",
+    }}
+  >
+    開催は春と秋の年2回。<br />
+    全国様々な場所で開催し、音楽仲間と出会う機会を提供します。<br />
+    演奏曲はGLAYの中から2曲を選曲します！
+  </p>
+
+  <p
+    style={{
+      maxWidth: "650px",
+      margin: "1rem auto",
+      lineHeight: "1.8",
+    }}
+  >
+    初心者からベテランまで、
+    音楽を楽しみたい気持ちがあれば大歓迎♪<br />
+    メンバーとは当日までグループDMでやりとり可能！<br />
+    当日は限られた時間で音を合わせ、特別な1日をお楽しみください！
+  </p>
+
+  {/* note の存在を軽く紹介 */}
+  <p
+    style={{
+      maxWidth: "650px",
+      margin: "2rem auto 0",
+      lineHeight: "1.8",
+      color: "#ccc",
+      fontSize: "0.95rem",
+    }}
+  >
+    各回のイベントレポートや活動記録は note にて公開しています。<br />
+    最新の投稿はこの下の「最近の活動」からご覧ください。
+  </p>
+</section>
+<RecentActivities />
+
 
 {/* Fee */}
 <section
@@ -648,21 +648,24 @@ export default function PreviewPage() {
       </p>
     </div>
 
-    {/* 第3回 Coming Soon */}
+    {/* 第3回 リストバンド */}
     <div
       style={{
         backgroundColor: "#111",
         border: "1px solid rgba(168, 85, 247, 0.3)",
         borderRadius: "8px",
-        padding: "3rem 1rem",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        color: "gray",
-        fontStyle: "italic",
+        padding: "1rem",
       }}
     >
+      <img
+        src="/3rd.png"
+        alt="第3回 バンド風リストバンド"
+        style={{
+          width: "100%",
+          borderRadius: "8px",
+          marginBottom: "1rem",
+        }}
+      />
       <h3
         style={{
           color: "var(--color-accent)",
@@ -671,10 +674,11 @@ export default function PreviewPage() {
       >
         3rd 名古屋セッション
       </h3>
-      <p style={{ margin: "0 0 1rem" }}>2025.10 開催予定</p>
-      <p style={{ fontSize: "1.2rem" }}>Coming Soon...</p>
+      <p style={{ margin: 0, fontSize: "0.9rem" }}>
+        バンド風リストバンド
+      </p>
     </div>
-  </div>
+    </div> 
 </section>
 
     <Footer /> {/* ← 全ページ共通のフッター */}
