@@ -382,6 +382,26 @@ export default function EntryPage() {
           現在はエントリー期間外です。
         </p>
       )}
+      <p
+        style={{
+          fontSize: "0.9rem",
+          color: "#aaa",
+          textAlign: "center",
+          marginTop: "1rem",
+          lineHeight: "1.6",
+        }}
+      >
+        ご参加にあたっては、必ず
+        <a
+          href="/guideline"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "var(--color-accent)", textDecoration: "underline", marginLeft: "0.25rem" }}
+        >
+          参加ガイドライン
+        </a>
+        をご確認ください。
+      </p>
 
       {status && (
         <p style={{ marginTop: "1rem", textAlign: "center", color: "gray" }}>
