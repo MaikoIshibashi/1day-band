@@ -8,7 +8,7 @@ export default function GalleryPage() {
       date: "2025.10",
       description: "第3回 名古屋セッション フォトギャラリー",
       photos: Array.from({ length: 30 }, (_, i) => ({
-        src: `/gallery/3rd/${i + 1}.jpg`,
+        src: `/gallery/3rd/pt${i + 1}.jpg`, // ← ここ！
         alt: `3rd Session Photo ${i + 1}`,
       })),
     },
