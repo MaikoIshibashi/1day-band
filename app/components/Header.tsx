@@ -9,6 +9,7 @@ export default function Header() {
   const navItems = [
     { label: "About", href: "/preview#about" },
     { label: "Events", href: "/preview#events" },
+    { label: "Gallery", href: "/gallery" }, // ← 追加 ✨
     { label: "Entry", href: "/entry" },
     { label: "Contact", href: "/contact" },
     { label: "FAQ", href: "/faq" },
@@ -26,23 +27,22 @@ export default function Header() {
         <nav className="hidden md:flex gap-6">
           {navItems.map((item) => (
             <Link
-            key={item.href}
-            href={item.href}
-            className={`relative group transition-colors duration-300 flex items-center ${
+              key={item.href}
+              href={item.href}
+              className={`relative group transition-colors duration-300 flex items-center ${
                 item.special
-                ? "text-amber-500 hover:text-amber-400"
-                : "text-gray-300 hover:text-purple-400"
-            }`}
+                  ? "text-amber-500 hover:text-amber-400"
+                  : "text-gray-300 hover:text-purple-400"
+              }`}
             >
-            {item.special && <span className="text-sm">🔒</span>}
-            <span className="ml-[2px]">{item.label}</span>
-            <span
+              {item.special && <span className="text-sm">🔒</span>}
+              <span className="ml-[2px]">{item.label}</span>
+              <span
                 className={`absolute left-0 -bottom-1 h-[2px] w-0 transition-all duration-300 group-hover:w-full ${
-                item.special ? "bg-amber-500" : "bg-purple-400"
+                  item.special ? "bg-amber-500" : "bg-purple-400"
                 }`}
-            ></span>
+              ></span>
             </Link>
-
           ))}
         </nav>
 
