@@ -11,12 +11,11 @@ export default function GalleryClient({
     id: string;
     title: string;
     date: string;
-    description: string;
-    credit?: string;
+    hasGallery?: boolean;
     photos: { src: string; alt: string }[];
   }[];
 }) {
-  const [selected, setSelected] = useState(galleries[0]);
+  const [selected, setSelected] = useState(galleries.find(g => g.hasGallery) || galleries[0]);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
   const openZoom = (idx: number) => setCurrentIndex(idx);
@@ -55,7 +54,6 @@ export default function GalleryClient({
   const zoomedPhoto =
     currentIndex !== null ? selected.photos[currentIndex] : null;
 
-  // ✅ ナチュラルソート関数
   const naturalSortedPhotos = [...selected.photos].sort((a, b) => {
     const numA = parseInt(a.src.match(/(\d+)/)?.[0] || "0", 10);
     const numB = parseInt(b.src.match(/(\d+)/)?.[0] || "0", 10);
@@ -90,55 +88,77 @@ export default function GalleryClient({
           marginBottom: "2.5rem",
         }}
       >
-        1Day Studio Band Session Archive — from the 3rd session onward
+        1Day Studio Band Session Archive
       </p>
-
-      {/* 回選択ボタン */}
-      <div
+{/* 回選択ボタン */}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    gap: "1rem",
+    flexWrap: "wrap",
+    marginBottom: "3rem",
+  }}
+>
+  {galleries.map((g) => (
+    <button
+      key={g.id}
+      onClick={() => {
+        if (g.hasGallery) setSelected(g);
+        setCurrentIndex(null);
+      }}
+      disabled={!g.hasGallery}
+      style={{
+        backgroundColor: !g.hasGallery
+          ? "#222"
+          : selected.id === g.id
+          ? "var(--color-accent)"
+          : "#111",
+        color: !g.hasGallery
+          ? "#999"
+          : selected.id === g.id
+          ? "#fff"
+          : "#ccc",
+        border: `1px solid ${
+          !g.hasGallery ? "#444" : "var(--color-accent)"
+        }`,
+        borderRadius: "10px",
+        padding: "1rem 1.4rem",
+        fontWeight: "bold",
+        cursor: !g.hasGallery ? "default" : "pointer",
+        transition: "all 0.3s ease",
+        minWidth: "180px",
+        lineHeight: "1.4",
+        opacity: !g.hasGallery ? 0.7 : 1,
+      }}
+    >
+      <span style={{ display: "block", fontSize: "1rem" }}>{g.title}</span>
+      <span
         style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "1rem",
-          flexWrap: "wrap",
-          marginBottom: "3rem",
+          display: "block",
+          fontSize: "0.8rem",
+          opacity: 0.8,
         }}
       >
-        {galleries.map((g) => (
-          <button
-            key={g.id}
-            onClick={() => {
-              setSelected(g);
-              setCurrentIndex(null);
-            }}
-            style={{
-              backgroundColor:
-                selected.id === g.id ? "var(--color-accent)" : "#111",
-              color: selected.id === g.id ? "#fff" : "#ccc",
-              border: "1px solid var(--color-accent)",
-              borderRadius: "10px",
-              padding: "0.8rem 1.4rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              minWidth: "160px",
-              lineHeight: "1.4",
-            }}
-          >
-            <span style={{ display: "block", fontSize: "1rem" }}>
-              {g.title}
-            </span>
-            <span
-              style={{
-                display: "block",
-                fontSize: "0.8rem",
-                opacity: 0.8,
-              }}
-            >
-              {g.date}
-            </span>
-          </button>
-        ))}
-      </div>
+        {g.date}
+      </span>
+      {/* ← NO PICTURE を別行で明示 */}
+      {!g.hasGallery && (
+        <span
+          style={{
+            display: "block",
+            fontSize: "0.75rem",
+            color: "#777",
+            marginTop: "0.3rem",
+            fontStyle: "italic",
+          }}
+        >
+          📷 NO PICTURE
+        </span>
+      )}
+    </button>
+  ))}
+</div>
 
       {/* ギャラリー本体 */}
       <AnimatePresence mode="wait">
@@ -153,7 +173,7 @@ export default function GalleryClient({
             margin: "0 auto",
           }}
         >
-          {selected.photos.length > 0 ? (
+          {selected.hasGallery && selected.photos.length > 0 ? (
             <div
               style={{
                 display: "grid",
@@ -189,7 +209,7 @@ export default function GalleryClient({
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "contain", // 👈 全体表示
+                      objectFit: "contain",
                       backgroundColor: "#000",
                     }}
                   />
@@ -210,7 +230,7 @@ export default function GalleryClient({
                 background: "rgba(255,255,255,0.02)",
               }}
             >
-              📷 この回の写真ギャラリーは準備中です
+              📷 NO PICTURE
             </motion.div>
           )}
         </motion.div>
