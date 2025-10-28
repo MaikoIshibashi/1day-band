@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Hero from "../components/Hero";
 import Reveal from "../components/Reveal"; // ← スクロールアニメーション
@@ -5,6 +7,10 @@ import Footer from "../components/Footer"; // ←追加
 import RecentActivities from "../components/RecentActivities"; // ←これを追加！
 import InterestButton from "./InterestButton";
 import SupportButton from "./SupportButton";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import FlowTimeline from "./FlowTimeline"; // ← 追加
+
 
 export default function PreviewPage() {
   return (
@@ -228,145 +234,9 @@ export default function PreviewPage() {
   </div>
 </section>
 
-{/* Timeline */}
-<section
-  id="timeline"
-  className="reveal scroll-mt-20"
-  style={{
-    padding: "4rem",
-    backgroundColor: "#111",
-    color: "white",
-  }}
->
-  <h2
-    style={{
-      fontSize: "2rem",
-      color: "var(--color-accent)",
-      textAlign: "center",
-      marginBottom: "3rem",
-    }}
-  >
-    当日までの流れ
-  </h2>
 
-  <div
-    style={{
-      maxWidth: "700px",
-      margin: "0 auto",
-      position: "relative",
-    }}
-  >
-    {/* 縦のライン */}
-    <div
-      style={{
-        position: "absolute",
-        left: "20px",
-        top: 0,
-        bottom: 0,
-        width: "2px",
-        background: "#444",
-      }}
-    ></div>
-
-    {[
-      {
-        title: "Entry Open",
-        note: "本番約5ヶ月前",
-        desc: "募集期間にエントリーページを公開。参加希望の方は当サイトより直接お申し込みください。",
-      },
-      {
-        title: "Member Selection",
-        note: "エントリー約1週間後",
-        desc: "希望パートや全体バランスを考慮してメンバーを決定。結果は公式メールにてご案内します。",
-      },
-      {
-        title: "Part Assignment",
-        note: "メンバー確定後",
-        desc: (
-          <>
-            同一パート希望者がいる場合は、希望難易度や全体のバランスを考慮してパート割りを行います。<br />
-            ドラム・ベース・ボーカルは基本1名体制（選考時に確定）<br />
-            複数人で構成されるパートについては、エントリー時のアンケート内容をもとに<br />
-            希望難易度や掛け持ち希望も踏まえて構成を調整します。
-          </>
-        ),
-      },
-      {
-        title: "Practice Log & Updates",
-        note: "本番まで",
-        desc: "グループDMで練習状況や進捗を共有。相談・交流しながら準備を進めます。",
-      },
-      {
-        title: "Midpoint Event",
-        note: "本番約2ヶ月前",
-        desc: "任意参加の中間イベントで進捗確認やプチセッションを開催。",
-      },
-      {
-        title: "Performance Day",
-        note: "当日",
-        desc: "スタジオで本番演奏を収録。後日編集して YouTube に公開します。",
-      },
-      {
-        title: "After Party",
-        note: "当日 ※任意参加",
-        desc: "終了後に交流会。美味しい料理とお酒で音楽トークを楽しみましょう。",
-      },
-    ].map((step, i) => (
-      <div
-        key={i}
-        style={{
-          marginBottom: "2rem",
-          paddingLeft: "60px",
-          position: "relative",
-        }}
-        className="reveal"
-      >
-        {/* 丸マーカー */}
-        <div
-          style={{
-            position: "absolute",
-            left: "11px",
-            top: "5px",
-            width: "18px",
-            height: "18px",
-            borderRadius: "50%",
-            background: "var(--color-accent)",
-          }}
-        ></div>
-
-        {/* タイトル＋補足 */}
-        <h3
-          style={{
-            margin: "0 0 0.5rem",
-            fontSize: "1.3rem",
-            color: "var(--color-accent)",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-          }}
-        >
-          {step.title}
-          <span style={{ color: "gray", fontSize: "0.9rem" }}>
-            （{step.note}）
-          </span>
-        </h3>
-
-        {/* 説明 */}
-        <p
-          style={{
-            margin: 0,
-            lineHeight: "1.6",
-            color: "#ddd",
-          }}
-        >
-          {step.desc}
-        </p>
-      </div>
-    ))}
-  </div>
-</section>
-
-
+{/* タイムラインセクション */}
+<FlowTimeline />
 
 
 {/* Events */}
