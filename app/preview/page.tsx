@@ -3,6 +3,8 @@ import Hero from "../components/Hero";
 import Reveal from "../components/Reveal"; // ← スクロールアニメーション
 import Footer from "../components/Footer"; // ←追加
 import RecentActivities from "../components/RecentActivities"; // ←これを追加！
+import InterestButton from "./InterestButton";
+import SupportButton from "./SupportButton";
 
 export default function PreviewPage() {
   return (
@@ -45,9 +47,23 @@ export default function PreviewPage() {
     2026.04 開催予定
   </p>
   <p style={{ marginTop: "0.5rem", color: "gray" }}>🟣 募集開始前</p>
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "1.2rem",
+    marginTop: "1.8rem",
+  }}
+>
+  <InterestButton />
+  <SupportButton />
+</div>
+
+
   {/* ↓ カード内に配置 */}
   <p style={{ fontSize: "0.95rem", color: "#aaa", marginTop: "1rem" }}>
-    エントリー開始までしばらくお待ちください。。
+    エントリー開始までしばらくお待ちください^^/
   </p>
   </div>
 

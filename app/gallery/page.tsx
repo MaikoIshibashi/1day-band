@@ -7,7 +7,6 @@ const sessions = [
   { id: "1st", title: "1st in Tokyo", date: "2024.10.27", hasGallery: false },
   { id: "2nd", title: "2nd in Osaka", date: "2025.04.26", hasGallery: false },
   { id: "3rd", title: "3rd in Nagoya", date: "2025.10.12", hasGallery: true },
-  { id: "4th", title: "4th in Fukuoka", date: "2026.04", hasGallery: false },
 ];
 
 export default function GalleryPage() {
