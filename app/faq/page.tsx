@@ -340,8 +340,8 @@ YouTubeやSNSで公開予定ですが、ご希望があればモザイク対応�
                           transition: "all 0.4s ease",
                           backgroundColor: "#262626",
                           color: "#ddd",
-                          padding: isOpen ? "1rem" : "0 1rem",
-                          lineHeight: "1.8",
+                          padding: isOpen ? "0.7rem 1rem" : "0 1rem", // ← 上下を少し詰める
+                          lineHeight: "1.6", // ← 行間も少し詰める
                           whiteSpace: "pre-line",
                         }}
                       >
@@ -350,9 +350,9 @@ YouTubeやSNSで公開予定ですが、ご希望があればモザイク対応�
                             p: ({ children }) => (
                               <p
                                 style={{
-                                  marginBottom: "1rem",
-                                  lineHeight: "1.8",
-                                  whiteSpace: "pre-line",
+                                marginBottom: "0.5rem",   // 🔹 余白を半分に（1rem → 0.5rem）
+                                lineHeight: "1.6",         // 🔹 行間も少し詰める（1.8 → 1.6）
+                                whiteSpace: "pre-line",    // 改行はそのまま反映
                                 }}
                               >
                                 {children}
