@@ -30,7 +30,7 @@ export default function FlowTimeline() {
       desc:
         "同一パート希望者がいる場合は、\n" +
         "希望難易度や全体構成を踏まえて\n" +
-        "パートを調整します。",
+        "パート割を作成します。",
     },
     {
       icon: "💬",
@@ -38,15 +38,15 @@ export default function FlowTimeline() {
       time: "本番まで",
       desc:
         "グループDMで練習状況を共有します。\n" +
-        "相談しながら本番に向けて準備を進めます。",
+        "雑談したり相談しながら本番に向けて準備を進めます。",
     },
     {
       icon: "🎤",
       title: "Midpoint Event",
-      time: "本番 約2ヶ月前",
+      time: "本番 約2ヶ月前（任意参加）",
       desc:
-        "任意参加の中間イベントを開催します。\n" +
-        "進捗確認やプチセッションを行います。",
+        "中間イベント（プチセッション）を開催！\n" +
+        "コラボ動画を作成します♪",
     },
     {
       icon: "📸",
@@ -59,11 +59,11 @@ export default function FlowTimeline() {
     {
       icon: "🍻",
       title: "After Party",
-      time: "当日 夜",
+      time: "当日 夜（任意参加）",
       desc:
         "本番後に交流会を開催します。\n" +
         "音楽仲間と語らいながら\n" +
-        "特別な時間を楽しみましょう。",
+        "特別な時間を過ごしましょう♪。",
     },
   ];
 
@@ -119,7 +119,7 @@ export default function FlowTimeline() {
       </div>
 
       <p className="text-gray-400 mt-8 text-xs sm:text-sm">
-        タップして詳細を見る 👉
+        タップして詳細をCheck👆
       </p>
     </section>
   );
