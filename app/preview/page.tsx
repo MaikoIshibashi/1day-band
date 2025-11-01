@@ -124,19 +124,6 @@ export default function PreviewPage() {
     限られた時間となりますが、特別な1日をお楽しみください！
   </p>
 
-  {/* note の存在を軽く紹介 */}
-  <p
-    style={{
-      maxWidth: "650px",
-      margin: "2rem auto 0",
-      lineHeight: "1.8",
-      color: "#ccc",
-      fontSize: "0.95rem",
-    }}
-  >
-    各回のイベントレポートや活動記録は note にて公開しています。<br />
-    最新の投稿はこの下の「最近の活動」からご覧ください。
-  </p>
 </section>
 <RecentActivities />
 

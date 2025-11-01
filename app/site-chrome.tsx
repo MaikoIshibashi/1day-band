@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import RevealOnScroll from "./components/Reveal";
+import Footer from "./components/Footer"; // ← 追加
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,17 +17,22 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     return <main>{children}</main>;
   }
 
-  // 特定ページで非表示にしたい条件をまとめて定義
+  // 🔹 特定ページ条件
   const isSurveyPage = pathname.startsWith("/survey");
-  const isTopPage = pathname === "/"; // トップページ（準備中ページ）
+  const isTopPage = pathname === "/"; // トップ（準備中ページ）
 
   const hideHeader = isSurveyPage || isTopPage;
+  const hideFooter = isSurveyPage; // ← surveyページだけフッター非表示
 
   return (
     <>
       {!hideHeader && <Header />}
       {!hideHeader && <RevealOnScroll />}
+
       <main>{children}</main>
+
+      {/* ✅ フッター（surveyページ以外で表示） */}
+      {!hideFooter && <Footer />}
     </>
   );
 }
