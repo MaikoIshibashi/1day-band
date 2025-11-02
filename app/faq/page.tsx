@@ -245,34 +245,40 @@ export default function FAQPage() {
     if (isMobile) setOpenItem((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  return (
-    <section
-      className={`reveal ${visible ? "visible" : ""}`}
+return (
+  <section
+    className={`reveal ${visible ? "visible" : ""}`}
+    style={{
+      padding: "8rem 1.5rem 4rem",
+      backgroundColor: "#000",
+      color: "white",
+      scrollMarginTop: "80px",
+    }}
+  >
+    {/* 🔹タイトル */}
+    <h2
       style={{
-        padding: "8rem 1.5rem 4rem",
-        backgroundColor: "#000",
-        color: "white",
-        scrollMarginTop: "80px",
+        fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+        color: "var(--color-accent)",
+        textAlign: "center",
+        lineHeight: "1.3",
+        whiteSpace: "nowrap",
+        wordBreak: "keep-all",
+        marginBottom: "3rem", // ← 🔥ここを追加！
       }}
+      className="text-[var(--color-accent)] font-bold"
     >
-      {/* 🔹タイトル */}
-      <h2
+      FAQ
+      <span
         style={{
-          fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
-          color: "var(--color-accent)",
-          textAlign: "center",
-          lineHeight: "1.3",
-          whiteSpace: "nowrap",
-          wordBreak: "keep-all",
+          fontSize: "clamp(1rem, 3vw, 1.2rem)",
+          opacity: 0.8,
+          marginLeft: "0.3rem",
         }}
-        className="text-[var(--color-accent)] font-bold"
       >
-        FAQ
-        <span style={{ fontSize: "clamp(1rem, 3vw, 1.2rem)", opacity: 0.8 }}>
-          （よくある質問）
-        </span>
-      </h2>
-
+        （よくある質問）
+      </span>
+    </h2>
 
 
       {/* 🔹FAQ本体 */}
