@@ -5,12 +5,28 @@ export default function GuidelinePage() {
       <div className="max-w-3xl mx-auto space-y-10">
         {/* Header */}
         <header className="text-center space-y-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-purple-400 leading-tight">
+        <h1
+          className="text-center font-bold text-purple-400"
+          style={{
+            fontSize: "1.6rem", // スマホでも自然に収まる大きさ
+            lineHeight: "1.4",
+            wordBreak: "keep-all",
+            whiteSpace: "nowrap", // ← 改行防止！
+          }}
+        >
           🎸1Day Studio Band
-          <span className="text-lg md:text-xl opacity-90 ml-1">
+          <span
+            style={{
+              fontSize: "1.1rem",
+              opacity: 0.9,
+              marginLeft: "0.3rem",
+              whiteSpace: "nowrap", // ← サブタイトルも一緒に1行扱い
+            }}
+          >
             ｜参加にあたってのお願い
           </span>
         </h1>
+
 
           <p className="text-gray-300 leading-relaxed">
             1Day Studio Bandは、音楽を通じて仲間と楽しく演奏することを目的としたイベントです。

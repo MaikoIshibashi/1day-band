@@ -249,7 +249,7 @@ export default function FAQPage() {
     <section
       className={`reveal ${visible ? "visible" : ""}`}
       style={{
-        padding: "6rem 1.5rem 4rem",
+        padding: "8rem 1.5rem 4rem",
         backgroundColor: "#000",
         color: "white",
         scrollMarginTop: "80px",
@@ -259,25 +259,15 @@ export default function FAQPage() {
       <h2
         className="faq-title"
         style={{
-          color: "var(--color-accent)",
+          fontSize: "2rem",
           textAlign: "center",
-          marginBottom: "2rem",
-          lineHeight: "1.3",
           wordBreak: "keep-all",
-          letterSpacing: "0.5px",
+          lineHeight: "1.3",
         }}
       >
-        FAQ
-        <span
-          style={{
-            fontSize: "1.2rem",
-            marginLeft: "0.3rem",
-            opacity: 0.85,
-          }}
-        >
-          （よくある質問）
-        </span>
+        FAQ <span style={{ fontSize: "1rem", opacity: 0.8 }}>（よくある質問）</span>
       </h2>
+
 
       {/* 🔹FAQ本体 */}
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
