@@ -51,12 +51,13 @@ export default function Contact() {
       className={`reveal ${visible ? "visible" : ""}`}
       style={{
         minHeight: "100vh",
-        padding: "4rem",
+        padding: "6rem 1.5rem 4rem", // ← ここを4rem→6remに変更（上に余白追加）
         backgroundColor: "var(--color-background)",
         color: "var(--color-foreground)",
         textAlign: "center",
+        scrollMarginTop: "80px", // ← これも追加するとページ内リンクにも対応
       }}
-    >
+>
       <h1 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
         お問い合わせ
       </h1>
