@@ -5,9 +5,13 @@ export default function GuidelinePage() {
       <div className="max-w-3xl mx-auto space-y-10">
         {/* Header */}
         <header className="text-center space-y-4">
-          <h1 className="text-2xl md:text-3xl font-bold text-purple-400">
-            🎸1Day Studio Band｜参加にあたってのお願い
-          </h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-purple-400 leading-tight">
+          🎸1Day Studio Band
+          <span className="text-lg md:text-xl opacity-90 ml-1">
+            ｜参加にあたってのお願い
+          </span>
+        </h1>
+
           <p className="text-gray-300 leading-relaxed">
             1Day Studio Bandは、音楽を通じて仲間と楽しく演奏することを目的としたイベントです。
           </p>
@@ -36,15 +40,6 @@ export default function GuidelinePage() {
             </li>
             <li>他イベントや個人活動などの告知や宣伝、勧誘などはご自身のSNSなどでお願いします。</li>
             <li>批判・マウントなど、他の方が不快に感じる行為はお控えください。</li>
-            <li>
-            グループDMはYouTube公開完了後にCloseとさせていただきます。
-            <p className="mt-1">
-                必要に応じてご自身の判断で退出していただいて構いません。
-            </p>
-            <p className="mt-1">
-                記念に残しておきたい方は、そのままでも大丈夫です😊
-            </p>
-            </li>
         </ul>
         </section>
 

@@ -70,18 +70,24 @@ export default function GalleryClient({
         textAlign: "center",
       }}
     >
-      {/* タイトル */}
+    {/* タイトル */}
+    <div style={{ textAlign: "center", marginBottom: "3rem", marginTop: "2rem" }}>
       <h1
         style={{
-          fontSize: "2.4rem",
+          fontSize: "2.5rem",
+          fontWeight: "bold",
           color: "var(--color-accent)",
-          marginBottom: "0.3rem",
-          letterSpacing: "1px",
+          textTransform: "uppercase",
+          borderBottom: "2px solid var(--color-accent)",
+          display: "inline-block",
+          paddingBottom: "0.5rem",
         }}
       >
         GALLERY
       </h1>
-      <p
+    </div>
+
+          <p
         style={{
           color: "gray",
           fontSize: "0.9rem",

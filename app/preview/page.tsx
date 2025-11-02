@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Hero from "../components/Hero";
 import Reveal from "../components/Reveal"; // ← スクロールアニメーション
-import Footer from "../components/Footer"; // ←追加
 import RecentActivities from "../components/RecentActivities"; // ←これを追加！
 import InterestButton from "./InterestButton";
 import SupportButton from "./SupportButton";
@@ -577,9 +576,6 @@ export default function PreviewPage() {
     </div>
     </div> 
 </section>
-
-
-    <Footer /> {/* ← 全ページ共通のフッター */}
 
     </>
   );
