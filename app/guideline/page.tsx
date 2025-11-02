@@ -8,24 +8,26 @@ export default function GuidelinePage() {
         <h1
           className="text-center font-bold text-purple-400"
           style={{
-            fontSize: "1.6rem", // スマホでも自然に収まる大きさ
+            fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             lineHeight: "1.4",
             wordBreak: "keep-all",
-            whiteSpace: "nowrap", // ← 改行防止！
+            whiteSpace: "normal", // ← nowrapを解除！
           }}
         >
           🎸1Day Studio Band
+          <br className="block md:hidden" /> {/* ← スマホでは強制改行 */}
           <span
             style={{
-              fontSize: "1.1rem",
+              fontSize: "clamp(1rem, 3.5vw, 1.4rem)",
               opacity: 0.9,
-              marginLeft: "0.3rem",
-              whiteSpace: "nowrap", // ← サブタイトルも一緒に1行扱い
+              display: "inline-block",
+              marginTop: "0.3rem",
             }}
           >
             ｜参加にあたってのお願い
           </span>
         </h1>
+
 
 
           <p className="text-gray-300 leading-relaxed">

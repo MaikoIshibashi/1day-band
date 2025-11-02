@@ -257,16 +257,22 @@ export default function FAQPage() {
     >
       {/* 🔹タイトル */}
       <h2
-        className="faq-title"
         style={{
-          fontSize: "2rem",
+          fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+          color: "var(--color-accent)",
           textAlign: "center",
-          wordBreak: "keep-all",
           lineHeight: "1.3",
+          whiteSpace: "nowrap",
+          wordBreak: "keep-all",
         }}
+        className="text-[var(--color-accent)] font-bold"
       >
-        FAQ <span style={{ fontSize: "1rem", opacity: 0.8 }}>（よくある質問）</span>
+        FAQ
+        <span style={{ fontSize: "clamp(1rem, 3vw, 1.2rem)", opacity: 0.8 }}>
+          （よくある質問）
+        </span>
       </h2>
+
 
 
       {/* 🔹FAQ本体 */}
