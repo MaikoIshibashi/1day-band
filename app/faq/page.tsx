@@ -108,7 +108,10 @@ export default function FAQPage() {
           a: `Membersサイトより各自練習動画をアップできるようにしていきますのでそちらを参考にされてください。
 また、不明点や質問は同じ悩みを持っている方も解決できることがありますのでグループ内でどんどん共有していきましょう♪`,
         },
-      ],
+        {
+          q: "立って演奏するのが難しいです。",
+          a: `座って演奏でも問題ないです！これを機に練習してみるでもどちらでも構いません＼(^o^)／`,
+        },      ],
     },
 
     // ③ 費用について
@@ -226,6 +229,8 @@ export default function FAQPage() {
   useEffect(() => {
     const mobile = window.innerWidth <= 768;
     setIsMobile(mobile);
+
+    // ✅ PCは最初から開く・モバイルは閉じる
     setOpenCategory(Object.fromEntries(faqCategories.map((_, i) => [i, !mobile])));
     setOpenItem(
       Object.fromEntries(
@@ -234,67 +239,68 @@ export default function FAQPage() {
         )
       )
     );
+
     const t = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(t);
   }, []);
 
+  // ✅ 両方で開閉できる
   const toggleCategory = (i: number) => {
-    if (isMobile) setOpenCategory((prev) => ({ ...prev, [i]: !prev[i] }));
+    setOpenCategory((prev) => ({ ...prev, [i]: !prev[i] }));
   };
   const toggleItem = (key: string) => {
-    if (isMobile) setOpenItem((prev) => ({ ...prev, [key]: !prev[key] }));
+    setOpenItem((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-return (
-  <section
-    className={`reveal ${visible ? "visible" : ""}`}
-    style={{
-      padding: "8rem 1.5rem 4rem",
-      backgroundColor: "#000",
-      color: "white",
-      scrollMarginTop: "80px",
-    }}
-  >
-    {/* 🔹タイトル */}
-    <h2
+  return (
+    <section
+      className={`reveal ${visible ? "visible" : ""}`}
       style={{
-        fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
-        color: "var(--color-accent)",
-        textAlign: "center",
-        lineHeight: "1.3",
-        whiteSpace: "nowrap",
-        wordBreak: "keep-all",
-        marginBottom: "3rem", // ← 🔥ここを追加！
+        padding: "8rem 1.5rem 4rem",
+        backgroundColor: "#000",
+        color: "white",
+        scrollMarginTop: "80px",
       }}
-      className="text-[var(--color-accent)] font-bold"
     >
-      FAQ
-      <span
+      {/* 🔹タイトル */}
+      <h2
         style={{
-          fontSize: "clamp(1rem, 3vw, 1.2rem)",
-          opacity: 0.8,
-          marginLeft: "0.3rem",
+          fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+          color: "var(--color-accent)",
+          textAlign: "center",
+          lineHeight: "1.2",
+          whiteSpace: "normal",
+          wordBreak: "normal",
+          marginBottom: "2.5rem",
         }}
       >
-        （よくある質問）
-      </span>
-    </h2>
-
+        FAQ
+        <span
+          style={{
+            fontSize: "clamp(1rem, 3vw, 1.2rem)",
+            opacity: 0.8,
+            marginLeft: "0.3rem",
+          }}
+        >
+          （よくある質問）
+        </span>
+      </h2>
 
       {/* 🔹FAQ本体 */}
-      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <div className="faq-container" style={{ maxWidth: "800px", margin: "0 auto" }}>
         {faqCategories.map((cat, i) => (
-          <div key={i} style={{ marginBottom: "2rem" }}>
+          <div key={i} style={{ marginBottom: "1.8rem" }}>
             {/* カテゴリー見出し */}
             <div
               onClick={() => toggleCategory(i)}
+              className="faq-category"
               style={{
-                cursor: isMobile ? "pointer" : "default",
-                fontSize: "1.5rem",
+                cursor: "pointer",
+                fontSize: "1.4rem",
                 fontWeight: "bold",
                 borderBottom: "2px solid var(--color-accent)",
-                paddingBottom: "0.5rem",
-                marginBottom: "1rem",
+                paddingBottom: "0.3rem",
+                marginBottom: "0.8rem",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
@@ -302,7 +308,7 @@ return (
               }}
             >
               <span>{cat.category}</span>
-              {isMobile && <span>{openCategory[i] ? "−" : "+"}</span>}
+              <span>{openCategory[i] ? "−" : "+"}</span>
             </div>
 
             {/* QAリスト */}
@@ -315,7 +321,7 @@ return (
                     <div
                       key={key}
                       style={{
-                        marginBottom: "1rem",
+                        marginBottom: "0.8rem",
                         border: "1px solid #444",
                         borderRadius: "6px",
                         overflow: "hidden",
@@ -325,32 +331,34 @@ return (
                       {/* 質問 */}
                       <div
                         onClick={() => toggleItem(key)}
+                        className="faq-question"
                         style={{
-                          cursor: isMobile ? "pointer" : "default",
+                          cursor: "pointer",
                           backgroundColor: "#1a1a1a",
-                          padding: "0.8rem 1rem",
+                          padding: "0.6rem 1rem",
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
                           color: "#fff",
-                          lineHeight: "1.5",
+                          lineHeight: "1.4",
                         }}
                       >
                         <span style={{ fontWeight: "bold" }}>Q. {faq.q}</span>
-                        {isMobile && <span>{isOpen ? "−" : "+"}</span>}
+                        <span>{isOpen ? "−" : "+"}</span>
                       </div>
 
                       {/* 回答 */}
                       <div
+                        className="faq-answer"
                         style={{
                           maxHeight: isOpen ? "1000px" : "0px",
                           opacity: isOpen ? 1 : 0,
                           overflow: "hidden",
-                          transition: "all 0.4s ease",
+                          transition: "all 0.3s ease",
                           backgroundColor: "#262626",
                           color: "#ddd",
-                          padding: isOpen ? "0.7rem 1rem" : "0 1rem", // ← 上下を少し詰める
-                          lineHeight: "1.6", // ← 行間も少し詰める
+                          padding: isOpen ? "0.5rem 1rem" : "0 1rem",
+                          lineHeight: "1.4",
                           whiteSpace: "pre-line",
                         }}
                       >
@@ -359,9 +367,9 @@ return (
                             p: ({ children }) => (
                               <p
                                 style={{
-                                marginBottom: "0.5rem",   // 🔹 余白を半分に（1rem → 0.5rem）
-                                lineHeight: "1.6",         // 🔹 行間も少し詰める（1.8 → 1.6）
-                                whiteSpace: "pre-line",    // 改行はそのまま反映
+                                  marginBottom: "0.3rem",
+                                  lineHeight: "1.4",
+                                  whiteSpace: "pre-line",
                                 }}
                               >
                                 {children}
@@ -397,19 +405,24 @@ return (
         ))}
       </div>
 
-      {/* 🔹レスポンシブタイトル調整CSS */}
+      {/* 🔹スタイル調整 */}
       <style jsx global>{`
-        .faq-title {
-          font-size: 2rem;
+        .faq-container p {
+          margin-bottom: 0.3rem !important;
+          line-height: 1.4 !important;
         }
-
-        @media (max-width: 600px) {
-          .faq-title {
-            font-size: 1.6rem;
-          }
-          .faq-title span {
-            font-size: 1rem;
-          }
+        .faq-container div {
+          line-height: 1.4 !important;
+        }
+        .faq-question {
+          padding: 0.6rem 1rem !important;
+        }
+        .faq-answer {
+          padding: 0.5rem 1rem !important;
+        }
+        .faq-category {
+          margin-bottom: 0.8rem !important;
+          padding-bottom: 0.3rem !important;
         }
       `}</style>
     </section>
