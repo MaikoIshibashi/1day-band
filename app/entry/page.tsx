@@ -3,15 +3,15 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import ReCAPTCHA from "react-google-recaptcha";
+import { entrySubmit } from "@/app/actions/entrySubmit";
 
 export default function EntryPage() {
   type EventData = {
     id: number;
     name: string;
-    start_date: string | null;
-    end_date: string | null;
-    event_date: string | null;
-    event_note?: string | null;
+    event_note: string | null;   // ← 表示用テキスト
+    entry_period: string | null; // ← 表示用テキスト
+    is_entry_open: boolean;      // ← 募集状態（true / false）
   };
 
   const [event, setEvent] = useState<EventData | null>(null);
@@ -33,19 +33,19 @@ export default function EntryPage() {
     message: "",
   });
 
-  // ==== 最新イベント取得 ====
+  // === 最新イベント読み込み ===
   useEffect(() => {
     const fetchEvent = async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("*")
+        .select("id, name, event_note, entry_period, is_entry_open")
         .order("id", { ascending: false })
         .limit(1)
         .single();
 
       if (error) {
         console.error(error);
-        setStatus("イベント情報の取得に失敗しました");
+        setStatus("イベント情報の取得に失敗しました。");
         return;
       }
       setEvent(data);
@@ -53,106 +53,46 @@ export default function EntryPage() {
     fetchEvent();
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSongChange = (song: string) => {
     setForm((prev) => {
       const selected = prev.songs.includes(song)
         ? prev.songs.filter((s) => s !== song)
         : [...prev.songs, song];
-      if (selected.length > 2) return prev; // 2曲まで
-      return { ...prev, songs: selected };
+      return selected.length > 2 ? prev : { ...prev, songs: selected };
     });
   };
 
-  // ==== Submit ====
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.name || !form.email || !form.xaccount || !form.region) {
-      setStatus("必須項目を入力してください。");
+    if (!event?.is_entry_open) {
+      setStatus("現在はエントリー期間外です。");
       return;
     }
+
     if (!captchaToken) {
       setStatus("reCAPTCHA を確認してください。");
       return;
     }
-    if (form.part2 && !form.level2) {
-      setStatus("第二希望の演奏歴を選択してください。");
-      return;
-    }
-    if (form.songs.length !== 2) {
-      setStatus("希望曲は2曲選択してください。");
+
+    if (!form.name || !form.email || !form.xaccount || !form.region) {
+      setStatus("必須項目を入力してください。");
       return;
     }
 
     setStatus("送信中...");
 
     try {
-      // メンバーを探す or 追加
-      let { data: member } = await supabase
-        .from("members")
-        .select("id")
-        .eq("email", form.email)
-        .single();
+      await entrySubmit({ ...form, eventId: event.id });
 
-      if (!member) {
-        const { data: newMember, error: memberError } = await supabase
-          .from("members")
-          .insert([
-            {
-              name: form.name,
-              email: form.email,
-              xaccount: form.xaccount,
-            },
-          ])
-          .select()
-          .single();
-
-        if (memberError) throw memberError;
-        member = newMember;
-      }
-
-      if (!event) {
-        setStatus("イベント情報が取得できませんでした。");
-        return;
-      }
-      if (!member) {
-        throw new Error("メンバー情報が取得できませんでした。");
-      }
-
-      // entries 登録
-      const { error: entryError } = await supabase.from("entries").insert([
-        {
-          member_id: member.id,
-          event_id: event.id,
-          part1: form.part1,
-          level1: form.level1,
-          part2: form.part2,
-          level2: form.level2,
-          availability: form.availability,
-          message: form.message,
-        },
-      ]);
-
-      if (entryError) throw entryError;
-
-      // メール送信
-      const mailRes = await fetch("/api/send-confirmation", {
+      await fetch("/api/send-confirmation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
-      if (!mailRes.ok) {
-        console.error("メール送信失敗:", await mailRes.text());
-        setStatus("エントリーは保存されましたが、確認メールの送信に失敗しました。");
-        return;
-      }
 
       window.location.href = "/entry/thanks";
     } catch (err) {
@@ -161,7 +101,6 @@ export default function EntryPage() {
     }
   };
 
-  // ==== 未取得時 ====
   if (!event) {
     return (
       <section style={{ padding: "4rem", textAlign: "center", color: "white" }}>
@@ -169,52 +108,6 @@ export default function EntryPage() {
       </section>
     );
   }
-
-  // ==== ステータス判定 ====
-  const now = new Date();
-  const isOpen =
-    event.start_date &&
-    event.end_date &&
-    now >= new Date(event.start_date) &&
-    now <= new Date(event.end_date);
-
-  const statusText = isOpen
-    ? "募集中"
-    : event.end_date && now > new Date(event.end_date)
-    ? "受付終了"
-    : "準備中";
-
-  const eventDateText = event.event_date
-    ? new Date(event.event_date).toLocaleDateString("ja-JP")
-    : event.event_note || "調整中";
-
-  // ==== 共通スタイル ====
-  const boxStyle = {
-    border: "1px solid var(--color-accent)",
-    borderRadius: "10px",
-    padding: "1.5rem",
-    textAlign: "center" as const,
-    minWidth: "200px",
-  };
-
-  const inputStyle = {
-    padding: "1rem",
-    borderRadius: "8px",
-    border: "1px solid #555",
-    backgroundColor: "#111",
-    color: "white",
-    fontSize: "1rem",
-  } as React.CSSProperties;
-
-  const selectStyle = { ...inputStyle };
-  const textareaStyle = { ...inputStyle, minHeight: "100px" };
-  const buttonStyle = {
-    ...inputStyle,
-    border: "1px solid var(--color-accent)",
-    color: "var(--color-accent)",
-    cursor: "pointer",
-    fontWeight: "bold",
-  };
 
   return (
     <section
@@ -254,26 +147,35 @@ export default function EntryPage() {
         }}
       >
         <div style={boxStyle}>
-          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>開催予定日</p>
-          <p style={{ fontSize: "1.3rem", fontWeight: "bold" }}>{eventDateText}</p>
-        </div>
-        <div style={boxStyle}>
-          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>エントリー期間</p>
-          <p>
-            {event.start_date && event.end_date
-              ? `${new Date(event.start_date).toLocaleDateString("ja-JP")} 〜 ${new Date(
-                  event.end_date
-                ).toLocaleDateString("ja-JP")}`
-              : "調整中"}
+          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>
+            開催予定日
+          </p>
+          <p style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
+            {event.event_note || "調整中"}
           </p>
         </div>
+
         <div style={boxStyle}>
-          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>ステータス</p>
-          <p style={{ fontSize: "1.2rem", fontWeight: "bold" }}>{statusText}</p>
+          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>
+            エントリー期間
+          </p>
+          <p style={{ whiteSpace: "pre-line" }}>
+            {event.entry_period || "調整中"}
+          </p>
+        </div>
+
+        <div style={boxStyle}>
+          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>
+            ステータス
+          </p>
+          <p style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+            {event.is_entry_open ? "募集中" : "準備中"}
+          </p>
         </div>
       </div>
 
-      {isOpen ? (
+      {/* --- form --- */}
+      {event.is_entry_open ? (
         <form
           onSubmit={handleSubmit}
           style={{
@@ -362,18 +264,7 @@ export default function EntryPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            style={buttonStyle}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--color-accent)";
-              e.currentTarget.style.color = "#fff";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = "#111";
-              e.currentTarget.style.color = "var(--color-accent)";
-            }}
-          >
+          <button type="submit" style={buttonStyle}>
             エントリーする
           </button>
         </form>
@@ -382,26 +273,6 @@ export default function EntryPage() {
           現在はエントリー期間外です。
         </p>
       )}
-      <p
-        style={{
-          fontSize: "0.9rem",
-          color: "#aaa",
-          textAlign: "center",
-          marginTop: "1rem",
-          lineHeight: "1.6",
-        }}
-      >
-        ご参加にあたっては、必ず
-        <a
-          href="/guideline"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "var(--color-accent)", textDecoration: "underline", marginLeft: "0.25rem" }}
-        >
-          参加ガイドライン
-        </a>
-        をご確認ください。
-      </p>
 
       {status && (
         <p style={{ marginTop: "1rem", textAlign: "center", color: "gray" }}>
@@ -411,3 +282,30 @@ export default function EntryPage() {
     </section>
   );
 }
+
+const boxStyle = {
+  border: "1px solid var(--color-accent)",
+  borderRadius: "10px",
+  padding: "1.5rem",
+  textAlign: "center" as const,
+  minWidth: "200px",
+};
+
+const inputStyle = {
+  padding: "1rem",
+  borderRadius: "8px",
+  border: "1px solid #555",
+  backgroundColor: "#111",
+  color: "white",
+  fontSize: "1rem",
+} as React.CSSProperties;
+
+const selectStyle = { ...inputStyle };
+const textareaStyle = { ...inputStyle, minHeight: "100px" };
+const buttonStyle = {
+  ...inputStyle,
+  border: "1px solid var(--color-accent)",
+  color: "var(--color-accent)",
+  cursor: "pointer",
+  fontWeight: "bold",
+};

@@ -4,8 +4,8 @@ import Link from "next/link";
 import Hero from "./components/Hero";
 import Reveal from "./components/Reveal"; // ← スクロールアニメーション
 import RecentActivities from "./components/RecentActivities"; // ←これを追加！
-import InterestButton from "./InterestButton";
-import SupportButton from "./SupportButton";
+import InterestButton from "./components/InterestButton";
+import SupportButton from "./components/SupportButton";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FlowTimeline from "./FlowTimeline"; // ← 追加

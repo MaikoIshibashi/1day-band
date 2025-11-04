@@ -2,33 +2,36 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { motion } from "framer-motion";
+import { upsertSupport } from "@/app/actions/upsertSupport"; // ← 追加！
 
+// ✅ Supabase (読み取り専用 / anon)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+// ✅ ブラウザ識別用キーをローカルに保存
+function ensureUserKey(eventId: string) {
+  const keyName = `support_userkey_${eventId}`;
+  let k = localStorage.getItem(keyName);
+  if (!k) {
+    k = crypto.randomUUID();
+    localStorage.setItem(keyName, k);
+  }
+  return k;
+}
+
 export default function SupportButton() {
-  const [count, setCount] = useState<number | null>(null);
-  const [clicked, setClicked] = useState(false);
-  const [userKey, setUserKey] = useState<string | null>(null);
   const eventId = "4th-fukuoka";
 
-  // ✅ 初期化：ユーザーキーとカウントをセット
+  const [count, setCount] = useState<number | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+
+  // ✅ 初期ロード（count 読み込み & localStorage 反映）
   useEffect(() => {
-    // 1️⃣ user_key 確保
-    let key = localStorage.getItem("user_key");
-    if (!key) {
-      key = crypto.randomUUID();
-      localStorage.setItem("user_key", key);
-    }
-    setUserKey(key);
-
-    // 2️⃣ 応援済みチェック
     const stored = localStorage.getItem(`supported_${eventId}`);
-    if (stored === "true") setClicked(true);
+    if (stored === "true") setSubmitted(true);
 
-    // 3️⃣ カウント取得
     const fetchCount = async () => {
       const { count } = await supabase
         .from("event_support")
@@ -36,29 +39,28 @@ export default function SupportButton() {
         .eq("event_id", eventId);
       setCount(count ?? 0);
     };
+
     fetchCount();
   }, [eventId]);
 
   // ✅ 応援ボタンクリック
   async function handleClick() {
-    if (clicked || !userKey) return;
-    setClicked(true);
+    if (submitted) return;
 
-    const { error } = await supabase
-      .from("event_support")
-      .insert({ event_id: eventId, user_key: userKey });
+    const userKey = ensureUserKey(eventId);
 
-    if (error) {
-      console.error("Insert error:", error);
-      return;
-    }
+    // 🔥 Server Action 経由で insert（RLS OK）
+    await upsertSupport(eventId, userKey);
 
     localStorage.setItem(`supported_${eventId}`, "true");
+    setSubmitted(true);
 
+    // 最新 count 更新
     const { count } = await supabase
       .from("event_support")
       .select("*", { count: "exact" })
       .eq("event_id", eventId);
+
     setCount(count ?? 0);
   }
 
@@ -66,16 +68,15 @@ export default function SupportButton() {
     <motion.button
       whileTap={{ scale: 0.9 }}
       onClick={handleClick}
-      disabled={clicked}
+      disabled={submitted}
       className={`px-4 py-2 rounded-full border transition ${
-        clicked
+        submitted
           ? "bg-amber-500 border-amber-400 text-white"
           : "border-amber-400 text-amber-300 hover:bg-amber-700/30"
       }`}
       style={{ marginLeft: "1rem" }}
     >
-      {clicked ? "📣 応援中！" : "📣 応援してるよー"}{" "}
-      {count ? `(${count})` : ""}
+      {submitted ? "📣 応援中！" : "📣 応援してるよー"} {count ? `(${count})` : ""}
     </motion.button>
   );
 }
