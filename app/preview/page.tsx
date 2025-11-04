@@ -243,9 +243,6 @@ export default function PreviewPage() {
   <h3 style={{ marginTop: "2rem", color: "var(--color-accent)" }}>
     3rd in Nagoya (2025/10)
   </h3>
-  <p style={{ marginTop: "0.5rem", color: "gray" }}>
-    本番開始2ヶ月前の中間イベント！みんなでコラボしました♪
-  </p>
   <div
     style={{
       display: "grid",
@@ -255,6 +252,16 @@ export default function PreviewPage() {
       margin: "1.5rem auto",
     }}
   >
+        <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/juiP3-nxLr8?si=wp5E6O4a_lesZ-u1"
+      title="第3回 本番動画1"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
     <iframe
       width="100%"
       height="200"
@@ -290,6 +297,7 @@ export default function PreviewPage() {
       margin: "1.5rem auto",
     }}
   >
+
     <iframe
       width="100%"
       height="200"
