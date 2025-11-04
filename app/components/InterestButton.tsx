@@ -1,16 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { createClient } from "@supabase/supabase-js";
-import { upsertInterest } from "@/app/actions/upsertInterest";
 
-// ✅ Supabase (count取得のみ / 書き込みには使わない)
+import { useState, useEffect, useRef } from "react";
+import { createClient } from "@supabase/supabase-js";
+import { motion, AnimatePresence } from "framer-motion";
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// ✅ localStorage の user_key を保証
+// ブラウザユーザー識別
 function ensureUserKey(eventId: string) {
   const keyName = `interest_userkey_${eventId}`;
   let k = localStorage.getItem(keyName);
@@ -26,68 +25,93 @@ export default function InterestButton() {
 
   const [open, setOpen] = useState(false);
   const [selectedPart, setSelectedPart] = useState<string | null>(null);
+
+  // ✅ Other を押したとき専用の入力値
+  const [otherText, setOtherText] = useState("");
+
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [count, setCount] = useState<number | null>(null);
 
-  // ✅ 初期表示
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // 初期処理
   useEffect(() => {
     const storedPart = localStorage.getItem(`interest_part_${eventId}`);
     if (storedPart) {
       setSubmitted(true);
-      setSelectedPart(storedPart);
+
+      // 保存されたパートが Other の場合は入力欄に反映
+      if (
+        ["Vocal", "Guitar", "Bass", "Drums", "Keyboard", "Other"].includes(
+          storedPart
+        ) === false
+      ) {
+        setSelectedPart("Other");
+        setOtherText(storedPart);
+      } else {
+        setSelectedPart(storedPart);
+      }
     }
 
+    // 初回 / 最新 count 取得
     const fetchCount = async () => {
       const { count } = await supabase
         .from("event_interest")
         .select("*", { count: "exact" })
         .eq("event_id", eventId);
-
       setCount(count ?? 0);
     };
-
     fetchCount();
   }, [eventId]);
 
-  // ✅ server action に委譲
+  // ✅ submit処理
   async function handleSubmit() {
-    if (!selectedPart) return;
-    setSubmitting(true);
-
     const userKey = ensureUserKey(eventId);
 
-    await upsertInterest(eventId, selectedPart, userKey);
+    // Other の場合は入力値を使用
+    const partToSave =
+      selectedPart === "Other" ? otherText.trim() : selectedPart;
 
-    // localStorage 更新
-    localStorage.setItem(`interest_part_${eventId}`, selectedPart);
+    if (!partToSave) return;
+    setSubmitting(true);
+
+    const { data: existing } = await supabase
+      .from("event_interest")
+      .select("id")
+      .eq("event_id", eventId)
+      .eq("user_key", userKey)
+      .limit(1);
+
+    if (existing && existing.length > 0) {
+      await supabase
+        .from("event_interest")
+        .update({ part: partToSave })
+        .eq("id", existing[0].id);
+    } else {
+      await supabase.from("event_interest").insert({
+        event_id: eventId,
+        user_key: userKey,
+        part: partToSave,
+      });
+    }
+
+    localStorage.setItem(`interest_part_${eventId}`, partToSave);
 
     setSubmitted(true);
     setOpen(false);
     setSubmitting(false);
 
-    // カウント最新化
-    const { count: refreshedCount } = await supabase
+    const { count: refreshed } = await supabase
       .from("event_interest")
       .select("*", { count: "exact" })
       .eq("event_id", eventId);
-
-    setCount(refreshedCount ?? 0);
-
-    // ✅ あなたのメール通知APIはそのまま使える
-    await fetch("/api/notify-part", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        eventId,
-        part: selectedPart,
-        userKey,
-      }),
-    });
+    setCount(refreshed ?? 0);
   }
 
   return (
     <div style={{ marginTop: "1rem" }}>
+      {/* ==== ボタン部分 ==== */}
       {!submitted ? (
         <motion.button
           whileTap={{ scale: 0.9 }}
@@ -99,7 +123,8 @@ export default function InterestButton() {
       ) : (
         <div className="flex flex-col items-center">
           <div className="px-6 py-2 rounded-full border border-purple-400 text-purple-300 bg-purple-700/30 text-center">
-            💜 登録済み（{selectedPart}） {count ? `(${count})` : ""}
+            💜 登録済み（{selectedPart === "Other" ? otherText : selectedPart}）
+            {count ? ` (${count})` : ""}
           </div>
           <button
             onClick={() => setOpen(true)}
@@ -110,7 +135,7 @@ export default function InterestButton() {
         </div>
       )}
 
-      {/* モーダル */}
+      {/* ==== モーダル ==== */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -128,7 +153,7 @@ export default function InterestButton() {
               exit={{ scale: 0.9 }}
             >
               <h3 className="text-xl text-purple-300 mb-4">
-                パートを{submitted ? "変更" : "選択"}してください 🎸
+                パートを選択してください 🎸
               </h3>
 
               <div className="grid grid-cols-2 gap-3">
@@ -136,7 +161,14 @@ export default function InterestButton() {
                   (part) => (
                     <button
                       key={part}
-                      onClick={() => setSelectedPart(part)}
+                      onClick={() => {
+                        setSelectedPart(part);
+                        if (part !== "Other") {
+                          setOtherText("");
+                        } else {
+                          setTimeout(() => inputRef.current?.focus(), 50);
+                        }
+                      }}
                       className={`border rounded-lg px-3 py-2 transition ${
                         selectedPart === part
                           ? "bg-purple-600 border-purple-400"
@@ -149,15 +181,15 @@ export default function InterestButton() {
                 )}
               </div>
 
+              {/* ✅ Other 入力欄 / 修正版 */}
               {selectedPart === "Other" && (
                 <input
+                  ref={inputRef}
                   type="text"
-                  placeholder="例：Chorus / Percussion / Tambourine など"
+                  value={otherText}
+                  onChange={(e) => setOtherText(e.target.value)}
+                  placeholder="例：Chorus / Percussion / Tambourine etc."
                   className="w-full mt-3 px-3 py-2 rounded-md bg-black border border-purple-400 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                  onChange={(e) => {
-                    const v = e.target.value.trim();
-                    if (v.length > 0) setSelectedPart(v);
-                  }}
                 />
               )}
 
@@ -168,10 +200,9 @@ export default function InterestButton() {
                 >
                   キャンセル
                 </button>
-
                 <button
                   onClick={handleSubmit}
-                  disabled={submitting || !selectedPart}
+                  disabled={submitting}
                   className={`px-4 py-2 rounded-full font-bold transition ${
                     submitting
                       ? "bg-gray-500"
