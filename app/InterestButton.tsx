@@ -1,20 +1,21 @@
 "use client";
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "@supabase/supabase-js";
+import { upsertInterest } from "@/app/actions/upsertInterest";
 
-// Supabaseクライアント
+// ✅ Supabase (count取得のみ / 書き込みには使わない)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// 乱数キー（ブラウザ1人＝1キー）
+// ✅ localStorage の user_key を保証
 function ensureUserKey(eventId: string) {
   const keyName = `interest_userkey_${eventId}`;
   let k = localStorage.getItem(keyName);
   if (!k) {
-    k = crypto.randomUUID(); // ブラウザ内のユニークID
+    k = crypto.randomUUID();
     localStorage.setItem(keyName, k);
   }
   return k;
@@ -26,10 +27,10 @@ export default function InterestButton() {
   const [open, setOpen] = useState(false);
   const [selectedPart, setSelectedPart] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false); // 参加登録済みか
+  const [submitted, setSubmitted] = useState(false);
   const [count, setCount] = useState<number | null>(null);
 
-  // 初期ロード
+  // ✅ 初期表示
   useEffect(() => {
     const storedPart = localStorage.getItem(`interest_part_${eventId}`);
     if (storedPart) {
@@ -42,76 +43,47 @@ export default function InterestButton() {
         .from("event_interest")
         .select("*", { count: "exact" })
         .eq("event_id", eventId);
+
       setCount(count ?? 0);
     };
+
     fetchCount();
   }, [eventId]);
 
-  // 登録・変更処理
+  // ✅ server action に委譲
   async function handleSubmit() {
     if (!selectedPart) return;
     setSubmitting(true);
 
     const userKey = ensureUserKey(eventId);
-    let action: "新規登録" | "変更" = "新規登録";
 
-    const { data: existing, error: fetchErr } = await supabase
-      .from("event_interest")
-      .select("id")
-      .eq("event_id", eventId)
-      .eq("user_key", userKey)
-      .limit(1);
+    await upsertInterest(eventId, selectedPart, userKey);
 
-    if (fetchErr) console.error(fetchErr);
-
-    if (existing && existing.length > 0) {
-      const targetId = existing[0].id;
-      const { error: updateErr } = await supabase
-        .from("event_interest")
-        .update({ part: selectedPart })
-        .eq("id", targetId);
-      if (updateErr) console.error(updateErr);
-      action = "変更";
-    } else {
-      const { error: insertErr } = await supabase.from("event_interest").insert({
-        event_id: eventId,
-        part: selectedPart,
-        user_key: userKey,
-      });
-      if (insertErr) console.error(insertErr);
-      action = "新規登録";
-    }
-
-    // localStorage更新
+    // localStorage 更新
     localStorage.setItem(`interest_part_${eventId}`, selectedPart);
 
-    // UI更新
     setSubmitted(true);
     setOpen(false);
     setSubmitting(false);
 
-    // 最新count更新
+    // カウント最新化
     const { count: refreshedCount } = await supabase
       .from("event_interest")
       .select("*", { count: "exact" })
       .eq("event_id", eventId);
+
     setCount(refreshedCount ?? 0);
 
-    // ✅ メール通知API呼び出し
-    try {
-      await fetch("/api/notify-part", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          eventId,
-          part: selectedPart,
-          userKey,
-          action, // ← "新規登録" or "変更"
-        }),
-      });
-    } catch (err) {
-      console.error("メール通知APIエラー:", err);
-    }
+    // ✅ あなたのメール通知APIはそのまま使える
+    await fetch("/api/notify-part", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventId,
+        part: selectedPart,
+        userKey,
+      }),
+    });
   }
 
   return (
@@ -146,9 +118,7 @@ export default function InterestButton() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => {
-              if (!submitting) setOpen(false);
-            }}
+            onClick={() => !submitting && setOpen(false)}
           >
             <motion.div
               onClick={(e) => e.stopPropagation()}
@@ -179,7 +149,6 @@ export default function InterestButton() {
                 )}
               </div>
 
-              {/* Other を押したとき */}
               {selectedPart === "Other" && (
                 <input
                   type="text"
@@ -187,9 +156,7 @@ export default function InterestButton() {
                   className="w-full mt-3 px-3 py-2 rounded-md bg-black border border-purple-400 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
                   onChange={(e) => {
                     const v = e.target.value.trim();
-                    if (v.length > 0) {
-                      setSelectedPart(v);
-                    }
+                    if (v.length > 0) setSelectedPart(v);
                   }}
                 />
               )}
@@ -201,6 +168,7 @@ export default function InterestButton() {
                 >
                   キャンセル
                 </button>
+
                 <button
                   onClick={handleSubmit}
                   disabled={submitting || !selectedPart}
