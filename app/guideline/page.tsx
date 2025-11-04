@@ -82,7 +82,7 @@ export default function GuidelinePage() {
         <h2 className="text-xl font-semibold text-purple-300 mb-3">📱 SNS投稿について</h2>
         <ul className="list-disc list-inside space-y-2 text-gray-200">
             <li>
-            1Day Studio Bandに関する投稿は
+            1Day Studio Bandに関する投稿時のタグは
             <span className="text-purple-400 font-semibold"> #1DayStudioBand </span>
             をぜひご利用ください！
             </li>

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import RevealOnScroll from "./components/Reveal";
-import Footer from "./components/Footer"; // ← 追加
+import Footer from "./components/Footer";
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -13,16 +13,15 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
-    // SSRとCSRのズレを避けるためマウント前は何も描画しない
     return <main>{children}</main>;
   }
 
-  // 🔹 特定ページ条件
+  // 🔹 トップでもヘッダー出すために isTopPage は使わない
   const isSurveyPage = pathname.startsWith("/survey");
-  const isTopPage = pathname === "/"; // トップ（準備中ページ）
 
-  const hideHeader = isSurveyPage || isTopPage;
-  const hideFooter = isSurveyPage; // ← surveyページだけフッター非表示
+  // ✅ survey だけヘッダー非表示にする
+  const hideHeader = isSurveyPage;
+  const hideFooter = isSurveyPage;
 
   return (
     <>
@@ -31,7 +30,6 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
       <main>{children}</main>
 
-      {/* ✅ フッター（surveyページ以外で表示） */}
       {!hideFooter && <Footer />}
     </>
   );
