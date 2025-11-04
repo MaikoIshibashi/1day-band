@@ -1,22 +1,42 @@
 "use server";
+
 import { createClient } from "@supabase/supabase-js";
 
-export async function entrySubmit(formData: any) {
+interface EntrySubmitForm {
+  eventId: number;
+  name: string;
+  email: string;
+  xaccount: string;
+  part1: string;
+  level1: string;
+  part2?: string;
+  level2?: string;
+  availability: string;
+  message: string;
+}
+
+export async function entrySubmit(formData: EntrySubmitForm) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // ← ここ重要！！ anonじゃない
+    process.env.SUPABASE_SERVICE_ROLE_KEY!, // ← anon じゃなく Service Key!
+    { auth: { persistSession: false } }
   );
 
-  // メンバー確認（email 重複チェック）
-  const { data: member } = await supabase
+  /** ✅ members に email が登録済みか確認 */
+  const { data: member, error: selectError } = await supabase
     .from("members")
     .select("id")
     .eq("email", formData.email)
     .single();
 
+  if (selectError && selectError.code !== "PGRST116") {
+    // PGRST116 は "row not found" なので正常扱い
+    console.error("select members error:", selectError);
+  }
+
   let memberId = member?.id;
 
-  // なければ members 追加
+  /** ✅ 未登録なら insert */
   if (!memberId) {
     const { data: newMember, error: memberError } = await supabase
       .from("members")
@@ -28,11 +48,15 @@ export async function entrySubmit(formData: any) {
       .select()
       .single();
 
-    if (memberError) throw memberError;
+    if (memberError) {
+      console.error("members insert error:", memberError);
+      throw new Error("メンバー登録に失敗しました");
+    }
+
     memberId = newMember.id;
   }
 
-  // entries を登録
+  /** ✅ entries に insert */
   const { error: entryError } = await supabase.from("entries").insert({
     member_id: memberId,
     event_id: formData.eventId,
@@ -44,7 +68,10 @@ export async function entrySubmit(formData: any) {
     message: formData.message,
   });
 
-  if (entryError) throw entryError;
+  if (entryError) {
+    console.error("entries insert error:", entryError);
+    throw new Error("エントリー登録に失敗しました");
+  }
 
   return { ok: true };
 }
