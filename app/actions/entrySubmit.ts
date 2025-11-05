@@ -21,23 +21,24 @@ type EntrySubmitForm = {
 export async function entrySubmit(formData: EntrySubmitForm) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // ✅ anonではない
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // --- メンバー確認（email 重複チェック） ---
-  const { data: member } = await supabase
+  /* ✅ 1. members.xaccount で重複確認 */
+  const { data: existingMember } = await supabase
     .from("members")
     .select("id")
-    .eq("email", formData.email)
+    .eq("xaccount", formData.xaccount)
     .single();
 
-  let memberId = member?.id;
+  let memberId = existingMember?.id;
 
+  /* ✅ 2. なければ members に insert */
   if (!memberId) {
     const { data: newMember, error: memberError } = await supabase
       .from("members")
       .insert({
-        name: formData.name,
+        nickname: formData.name,     // ← nickname カラムに保存（ここ重要）
         email: formData.email,
         xaccount: formData.xaccount,
         region: formData.region,
@@ -49,10 +50,13 @@ export async function entrySubmit(formData: EntrySubmitForm) {
     memberId = newMember.id;
   }
 
-  // --- entries 登録 ---
+  /* ✅ 3. entries は常に insert */
   const { error: entryError } = await supabase.from("entries").insert({
     member_id: memberId,
     event_id: formData.eventId,
+
+    nickname: formData.name,        // ← entries.nickname に保存
+    region: formData.region,        // ← entries.region に保存
 
     part1: formData.part1,
     level1: formData.level1,
@@ -65,6 +69,8 @@ export async function entrySubmit(formData: EntrySubmitForm) {
     songs: formData.songs,
     availability: formData.availability,
     message: formData.message || null,
+
+    status: "pending",
   });
 
   if (entryError) throw entryError;
