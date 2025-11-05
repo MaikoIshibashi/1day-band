@@ -9,7 +9,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// ブラウザユーザー識別
+// 🔑 ブラウザで1ユーザーを識別
 function ensureUserKey(eventId: string) {
   const keyName = `interest_userkey_${eventId}`;
   let k = localStorage.getItem(keyName);
@@ -25,9 +25,7 @@ export default function InterestButton() {
 
   const [open, setOpen] = useState(false);
   const [selectedPart, setSelectedPart] = useState<string | null>(null);
-
-  // ✅ Other を押したとき専用の入力値
-  const [otherText, setOtherText] = useState("");
+  const [otherText, setOtherText] = useState(""); // Other 入力値
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -35,13 +33,12 @@ export default function InterestButton() {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // 初期処理
+  // ✅ 初期ロード
   useEffect(() => {
     const storedPart = localStorage.getItem(`interest_part_${eventId}`);
     if (storedPart) {
       setSubmitted(true);
 
-      // 保存されたパートが Other の場合は入力欄に反映
       if (
         ["Vocal", "Guitar", "Bass", "Drums", "Keyboard", "Other"].includes(
           storedPart
@@ -54,7 +51,6 @@ export default function InterestButton() {
       }
     }
 
-    // 初回 / 最新 count 取得
     const fetchCount = async () => {
       const { count } = await supabase
         .from("event_interest")
@@ -65,17 +61,16 @@ export default function InterestButton() {
     fetchCount();
   }, [eventId]);
 
-  // ✅ submit処理
+  // ✅ Submit（DB + メール送信）
   async function handleSubmit() {
     const userKey = ensureUserKey(eventId);
-
-    // Other の場合は入力値を使用
     const partToSave =
       selectedPart === "Other" ? otherText.trim() : selectedPart;
 
     if (!partToSave) return;
     setSubmitting(true);
 
+    // ▼ Supabase へ Insert / Update
     const { data: existing } = await supabase
       .from("event_interest")
       .select("id")
@@ -83,7 +78,9 @@ export default function InterestButton() {
       .eq("user_key", userKey)
       .limit(1);
 
-    if (existing && existing.length > 0) {
+    const action = existing?.length > 0 ? "変更" : "新規登録";
+
+    if (existing?.length > 0) {
       await supabase
         .from("event_interest")
         .update({ part: partToSave })
@@ -98,20 +95,36 @@ export default function InterestButton() {
 
     localStorage.setItem(`interest_part_${eventId}`, partToSave);
 
-    setSubmitted(true);
-    setOpen(false);
-    setSubmitting(false);
+    // ▼ ✅ メール送信 API
+    try {
+      await fetch("/api/notify-part", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventId,
+          part: partToSave,
+          userKey,
+          action, // ← 新規 or 変更
+        }),
+      });
+    } catch (err) {
+      console.error("メール通知 API エラー:", err);
+    }
 
+    // ▼ count 更新
     const { count: refreshed } = await supabase
       .from("event_interest")
       .select("*", { count: "exact" })
       .eq("event_id", eventId);
     setCount(refreshed ?? 0);
+
+    setSubmitted(true);
+    setOpen(false);
+    setSubmitting(false);
   }
 
   return (
     <div style={{ marginTop: "1rem" }}>
-      {/* ==== ボタン部分 ==== */}
       {!submitted ? (
         <motion.button
           whileTap={{ scale: 0.9 }}
@@ -135,7 +148,6 @@ export default function InterestButton() {
         </div>
       )}
 
-      {/* ==== モーダル ==== */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -181,7 +193,6 @@ export default function InterestButton() {
                 )}
               </div>
 
-              {/* ✅ Other 入力欄 / 修正版 */}
               {selectedPart === "Other" && (
                 <input
                   ref={inputRef}

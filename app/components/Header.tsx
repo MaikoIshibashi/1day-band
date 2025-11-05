@@ -20,7 +20,7 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 w-full bg-black/80 backdrop-blur z-50 border-b border-gray-800">
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
-        <Link href="/preview">
+        <Link href="/">
           <img
             src="/logo.png"
             alt="1Day Studio Band ロゴ"
