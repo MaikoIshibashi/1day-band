@@ -8,22 +8,24 @@ type EntrySubmitForm = {
   region: string;
   part1: string;
   level1: string;
+  difficulty1: string; // ← 追加
   part2?: string;
   level2?: string;
+  difficulty2?: string; // ← 追加
   songs: string[];
   plan?: string;
   availability: string;
   message?: string;
-  eventId: number;   // ← EntryPage から渡してる
+  eventId: number;
 };
 
 export async function entrySubmit(formData: EntrySubmitForm) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // ← anonじゃない
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // ✅ anonじゃない
   );
 
-  // メンバー確認（email 重複チェック）
+  // --- メンバー確認（email 重複チェック） ---
   const { data: member } = await supabase
     .from("members")
     .select("id")
@@ -48,17 +50,23 @@ export async function entrySubmit(formData: EntrySubmitForm) {
     memberId = newMember.id;
   }
 
-  // entries を登録
+  // --- entries 登録 ---
   const { error: entryError } = await supabase.from("entries").insert({
     member_id: memberId,
     event_id: formData.eventId,
+
     part1: formData.part1,
     level1: formData.level1,
-    part2: formData.part2,
-    level2: formData.level2,
+    difficulty1: formData.difficulty1, // ← 入れる
+
+    part2: formData.part2 || null,
+    level2: formData.level2 || null,
+    difficulty2: formData.difficulty2 || null, // ← 入れる
+
     songs: formData.songs,
+    plan: formData.plan || null,
     availability: formData.availability,
-    message: formData.message,
+    message: formData.message || null,
   });
 
   if (entryError) throw entryError;

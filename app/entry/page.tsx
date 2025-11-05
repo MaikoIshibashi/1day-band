@@ -9,34 +9,33 @@ export default function EntryPage() {
   type EventData = {
     id: number;
     name: string;
-    event_note: string | null;   // ← 表示用テキスト
-    entry_period: string | null; // ← 表示用テキスト
-    is_entry_open: boolean;      // ← 募集状態（true / false）
+    event_note: string | null;
+    entry_period: string | null;
+    is_entry_open: boolean;
   };
 
   const [event, setEvent] = useState<EventData | null>(null);
   const [captchaToken, setCaptchaToken] = useState("");
   const [status, setStatus] = useState("");
 
-const [form, setForm] = useState({
-  name: "",
-  email: "",
-  xaccount: "",
-  region: "",
-  part1: "",
-  level1: "",
-  difficulty1: "",   // ← 追加
-  part2: "",
-  level2: "",
-  difficulty2: "",   // ← 追加
-  songs: [] as string[],
-  plan: "",
-  availability: "",
-  message: "",
-});
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    xaccount: "",
+    region: "",
+    part1: "",
+    level1: "",
+    difficulty1: "",
+    part2: "",
+    level2: "",
+    difficulty2: "",
+    songs: [] as string[],
+    plan: "",
+    availability: "",
+    message: "",
+  });
 
-
-  // === 最新イベント読み込み ===
+  // ========= 最新イベント読み込み =========
   useEffect(() => {
     const fetchEvent = async () => {
       const { data, error } = await supabase
@@ -53,12 +52,13 @@ const [form, setForm] = useState({
       }
       setEvent(data);
     };
+
     fetchEvent();
   }, []);
 
-const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSongChange = (song: string) => {
     setForm((prev) => {
@@ -151,34 +151,22 @@ const handleChange = (
         }}
       >
         <div style={boxStyle}>
-          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>
-            開催予定日
-          </p>
-          <p style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
-            {event.event_note || "調整中"}
-          </p>
+          <p style={labelMain}>開催予定日</p>
+          <p style={boxText}>{event.event_note || "調整中"}</p>
         </div>
 
         <div style={boxStyle}>
-          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>
-            エントリー期間
-          </p>
-          <p style={{ whiteSpace: "pre-line" }}>
-            {event.entry_period || "調整中"}
-          </p>
+          <p style={labelMain}>エントリー期間</p>
+          <p style={{ whiteSpace: "pre-line" }}>{event.entry_period || "調整中"}</p>
         </div>
 
         <div style={boxStyle}>
-          <p style={{ color: "var(--color-accent)", fontWeight: "bold" }}>
-            ステータス
-          </p>
-          <p style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
-            {event.is_entry_open ? "募集中" : "準備中"}
-          </p>
+          <p style={labelMain}>ステータス</p>
+          <p style={boxText}>{event.is_entry_open ? "募集中" : "準備中"}</p>
         </div>
       </div>
 
-      {/* --- form --- */}
+      {/* === エントリーフォーム === */}
       {event.is_entry_open ? (
         <form
           onSubmit={handleSubmit}
@@ -187,140 +175,83 @@ const handleChange = (
             margin: "0 auto",
             display: "flex",
             flexDirection: "column",
-            gap: "2rem",
+            gap: "1.5rem",
           }}
         >
-          {/* 名前・連絡 */}
+          {/* 基本情報 */}
           <input name="name" value={form.name} onChange={handleChange} placeholder="ニックネーム" required style={inputStyle} />
           <input name="email" value={form.email} onChange={handleChange} type="email" placeholder="メールアドレス" required style={inputStyle} />
           <input name="xaccount" value={form.xaccount} onChange={handleChange} placeholder="Xアカウント（@なし）" required style={inputStyle} />
 
-<h3 style={{ color: "var(--color-accent)" }}>地域（都道府県）</h3>
-<select name="region" value={form.region} onChange={handleChange} required style={selectStyle}>
-  <option value="">都道府県を選択</option>
-  <option>北海道</option>
-  <option>青森県</option>
-  <option>岩手県</option>
-  <option>宮城県</option>
-  <option>秋田県</option>
-  <option>山形県</option>
-  <option>福島県</option>
-  <option>茨城県</option>
-  <option>栃木県</option>
-  <option>群馬県</option>
-  <option>埼玉県</option>
-  <option>千葉県</option>
-  <option>東京都</option>
-  <option>神奈川県</option>
-  <option>新潟県</option>
-  <option>富山県</option>
-  <option>石川県</option>
-  <option>福井県</option>
-  <option>山梨県</option>
-  <option>長野県</option>
-  <option>岐阜県</option>
-  <option>静岡県</option>
-  <option>愛知県</option>
-  <option>三重県</option>
-  <option>滋賀県</option>
-  <option>京都府</option>
-  <option>大阪府</option>
-  <option>兵庫県</option>
-  <option>奈良県</option>
-  <option>和歌山県</option>
-  <option>鳥取県</option>
-  <option>島根県</option>
-  <option>岡山県</option>
-  <option>広島県</option>
-  <option>山口県</option>
-  <option>徳島県</option>
-  <option>香川県</option>
-  <option>愛媛県</option>
-  <option>高知県</option>
-  <option>福岡県</option>
-  <option>佐賀県</option>
-  <option>長崎県</option>
-  <option>熊本県</option>
-  <option>大分県</option>
-  <option>宮崎県</option>
-  <option>鹿児島県</option>
-  <option>沖縄県</option>
-</select>
-
+          {/* 地域 */}
+          <h3 style={labelStyle}>地域（都道府県）</h3>
+          <select name="region" value={form.region} onChange={handleChange} required style={selectStyle}>
+            <option value="">都道府県を選択</option>
+            {jpPrefectures.map((p) => (
+              <option key={p}>{p}</option>
+            ))}
+          </select>
 
           {/* 希望曲 */}
-          <h3 style={{ color: "var(--color-accent)" }}>希望曲（2曲選択）</h3>
+          <h3 style={labelStyle}>希望曲（2曲選択）</h3>
           {["SOUL LOVE", "HOWEVER", "サバイバル"].map((song) => (
             <label key={song} style={{ display: "block" }}>
               <input type="checkbox" checked={form.songs.includes(song)} onChange={() => handleSongChange(song)} /> {song}
             </label>
           ))}
 
-      <h3 style={{ color: "var(--color-accent)" }}>第一希望パート</h3>
+          {/* --- 第一希望 --- */}
+          <h3 style={labelStyle}>第一希望パート</h3>
+          <select name="part1" value={form.part1} onChange={handleChange} required style={selectStyle}>
+            <option value="">第一希望パートを選択</option>
+            {parts.map((p) => (
+              <option key={p}>{p}</option>
+            ))}
+          </select>
 
-      <select name="part1" value={form.part1} onChange={handleChange} required style={selectStyle}>
-        <option value="">第一希望パートを選択</option>
-        <option>ギター</option><option>ベース</option><option>ドラム</option>
-        <option>キーボード</option><option>ボーカル</option>
-        <option>コーラス</option><option>パーカッション</option>
-      </select>
+          <select name="level1" value={form.level1} onChange={handleChange} required style={selectStyle}>
+            <option value="">演奏歴</option>
+            {levels.map((p) => (
+              <option key={p}>{p}</option>
+            ))}
+            <option>お任せ</option>
+          </select>
 
-      <h4 style={{ marginTop: "1rem", color: "var(--color-accent)" }}>演奏歴</h4>
-      <select name="level1" value={form.level1} onChange={handleChange} required style={selectStyle}>
-        <option value="">演奏歴を選択</option>
-        <option>半年未満</option><option>1年未満</option><option>1〜3年</option>
-        <option>3〜5年</option><option>5〜10年</option><option>10年以上</option>
-      </select>
+          <select name="difficulty1" value={form.difficulty1} onChange={handleChange} required style={selectStyle}>
+            <option value="">希望の難易度</option>
+            <option>やさしめ</option>
+            <option>普通</option>
+            <option>チャレンジ</option>
+            <option>お任せ</option>
+          </select>
 
-      <h4 style={{ marginTop: "1rem", color: "var(--color-accent)" }}>希望する難易度</h4>
-      <select name="difficulty1" value={form.difficulty1} onChange={handleChange} required style={selectStyle}>
-        <option value="">希望の難易度を選択</option>
-        <option value="やさしめ">✅ やさしめ</option>
-        <option value="普通">🎯 普通</option>
-        <option value="チャレンジ">🔥 チャレンジ</option>
-      </select>
+          {/* --- 第二希望 --- */}
+          <h3 style={labelStyle}>第二希望パート（任意）</h3>
+          <select name="part2" value={form.part2} onChange={handleChange} style={selectStyle}>
+            <option value="">第二希望パートを選択</option>
+            {parts.map((p) => (
+              <option key={p}>{p}</option>
+            ))}
+          </select>
 
+          <select name="level2" value={form.level2} onChange={handleChange} style={selectStyle}>
+            <option value="">演奏歴（任意）</option>
+            {levels.map((p) => (
+              <option key={p}>{p}</option>
+            ))}
+            <option>お任せ</option>
+          </select>
 
-<h3 style={{ color: "var(--color-accent)" }}>第二希望パート（任意）</h3>
-
-<select name="part2" value={form.part2} onChange={handleChange} style={selectStyle}>
-  <option value="">第二希望パートを選択（任意）</option>
-  <option>ギター</option><option>ベース</option><option>ドラム</option>
-  <option>キーボード</option><option>ボーカル</option>
-  <option>コーラス</option><option>パーカッション</option>
-</select>
-
-<h4 style={{ marginTop: "1rem", color: "var(--color-accent)" }}>演奏歴（任意）</h4>
-<select
-  name="level2"
-  value={form.level2}
-  onChange={handleChange}
-  style={selectStyle}
->
-  <option value="">演奏歴を選択（任意）</option>
-  <option>半年未満</option><option>1年未満</option><option>1〜3年</option>
-  <option>3〜5年</option><option>5〜10年</option><option>10年以上</option>
-</select>
-
-<h4 style={{ marginTop: "1rem", color: "var(--color-accent)" }}>
-  希望する難易度（任意）
-</h4>
-<select
-  name="difficulty2"
-  value={form.difficulty2}
-  onChange={handleChange}
-  style={selectStyle}
->
-  <option value="">希望の難易度を選択（任意）</option>
-  <option value="やさしめ">✅ やさしめ</option>
-  <option value="普通">🎯 普通</option>
-  <option value="チャレンジ">🔥 チャレンジ</option>
-</select>
-
-
+          <select name="difficulty2" value={form.difficulty2} onChange={handleChange} style={selectStyle}>
+            <option value="">希望の難易度（任意）</option>
+            <option>やさしめ</option>
+            <option>普通</option>
+            <option>チャレンジ</option>
+            <option>お任せ</option>
+          </select>
 
           {/* 参加可能日 */}
-          <h3 style={{ color: "var(--color-accent)" }}>参加可能日</h3>
+          <h3 style={labelStyle}>参加可能日</h3>
           <textarea
             name="availability"
             value={form.availability}
@@ -366,6 +297,21 @@ const handleChange = (
   );
 }
 
+/* ===== options ===== */
+const parts = ["ギター", "ベース", "ドラム", "キーボード", "ボーカル", "コーラス", "パーカッション"];
+const levels = ["半年未満", "1年未満", "1〜3年", "3〜5年", "5〜10年", "10年以上"];
+const jpPrefectures = [
+  "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",
+  "新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県",
+  "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県",
+  "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
+];
+
+/* ===== styles ===== */
+const labelMain = { color: "var(--color-accent)", fontWeight: "bold" };
+const labelStyle = { marginBottom: "0.2rem", color: "var(--color-accent)", fontWeight: "bold" };
+const boxText = { fontSize: "1.3rem", fontWeight: "bold" };
+
 const boxStyle = {
   border: "1px solid var(--color-accent)",
   borderRadius: "10px",
@@ -381,7 +327,7 @@ const inputStyle = {
   backgroundColor: "#111",
   color: "white",
   fontSize: "1rem",
-} as React.CSSProperties;
+};
 
 const selectStyle = { ...inputStyle };
 const textareaStyle = { ...inputStyle, minHeight: "100px" };
