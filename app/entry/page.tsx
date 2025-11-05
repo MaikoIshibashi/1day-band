@@ -131,7 +131,7 @@ export default function EntryPage() {
       {event.is_entry_open ? (
         <form onSubmit={handleSubmit} style={formStyle}>
           {/* ---- 基本情報 ---- */}
-          <EntryInput name="name" placeholder="ニックネーム ※公開されます" required />
+          <EntryInput name="name" placeholder="ニックネーム" required />
           <EntryInput name="email" type="email" placeholder="メールアドレス" required />
           <EntryInput
             name="xaccount"

@@ -8,12 +8,11 @@ type EntrySubmitForm = {
   region: string;
   part1: string;
   level1: string;
-  difficulty1: string; // ← 追加
+  difficulty1: string;
   part2?: string;
   level2?: string;
-  difficulty2?: string; // ← 追加
+  difficulty2?: string;
   songs: string[];
-  plan?: string;
   availability: string;
   message?: string;
   eventId: number;
@@ -22,7 +21,7 @@ type EntrySubmitForm = {
 export async function entrySubmit(formData: EntrySubmitForm) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // ✅ anonじゃない
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // ✅ anonではない
   );
 
   // --- メンバー確認（email 重複チェック） ---
@@ -57,14 +56,13 @@ export async function entrySubmit(formData: EntrySubmitForm) {
 
     part1: formData.part1,
     level1: formData.level1,
-    difficulty1: formData.difficulty1, // ← 入れる
+    difficulty1: formData.difficulty1,
 
     part2: formData.part2 || null,
     level2: formData.level2 || null,
-    difficulty2: formData.difficulty2 || null, // ← 入れる
+    difficulty2: formData.difficulty2 || null,
 
     songs: formData.songs,
-    plan: formData.plan || null,
     availability: formData.availability,
     message: formData.message || null,
   });
