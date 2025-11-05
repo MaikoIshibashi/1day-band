@@ -1,14 +1,29 @@
 "use server";
-
 import { createClient } from "@supabase/supabase-js";
 
-export async function entrySubmit(formData: any) {
+type EntrySubmitForm = {
+  name: string;
+  email: string;
+  xaccount: string;
+  region: string;
+  part1: string;
+  level1: string;
+  part2?: string;
+  level2?: string;
+  songs: string[];
+  plan?: string;
+  availability: string;
+  message?: string;
+  eventId: number;   // ← EntryPage から渡してる
+};
+
+export async function entrySubmit(formData: EntrySubmitForm) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // ← anon じゃない（Service key）
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // ← anonじゃない
   );
 
-  // メンバー照会（email 基準）
+  // メンバー確認（email 重複チェック）
   const { data: member } = await supabase
     .from("members")
     .select("id")
@@ -17,7 +32,6 @@ export async function entrySubmit(formData: any) {
 
   let memberId = member?.id;
 
-  // メンバー未登録なら insert
   if (!memberId) {
     const { data: newMember, error: memberError } = await supabase
       .from("members")
@@ -25,6 +39,7 @@ export async function entrySubmit(formData: any) {
         name: formData.name,
         email: formData.email,
         xaccount: formData.xaccount,
+        region: formData.region,
       })
       .select()
       .single();
@@ -33,19 +48,15 @@ export async function entrySubmit(formData: any) {
     memberId = newMember.id;
   }
 
-  // entries 登録
+  // entries を登録
   const { error: entryError } = await supabase.from("entries").insert({
     member_id: memberId,
     event_id: formData.eventId,
-
     part1: formData.part1,
     level1: formData.level1,
-    difficulty1: formData.difficulty1,
-
-    part2: formData.part2 || null,
-    level2: formData.level2 || null,
-    difficulty2: formData.difficulty2 || null,
-
+    part2: formData.part2,
+    level2: formData.level2,
+    songs: formData.songs,
     availability: formData.availability,
     message: formData.message,
   });
