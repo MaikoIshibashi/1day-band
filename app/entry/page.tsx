@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import ReCAPTCHA from "react-google-recaptcha";
 import { entrySubmit } from "@/app/actions/entrySubmit";
@@ -38,7 +38,7 @@ export default function EntryPage() {
 
   /* ===== 最新イベント読み込み ===== */
   useEffect(() => {
-    (async () => {
+    const fetchEvent = async () => {
       const { data, error } = await supabase
         .from("events")
         .select("id, name, event_note, entry_period, is_entry_open")
@@ -48,26 +48,25 @@ export default function EntryPage() {
 
       if (!error) setEvent(data);
       else setStatus("イベント情報の取得に失敗しました。");
-    })();
+    };
+    fetchEvent();
   }, []);
 
-  /* ===== Handler ===== */
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSongChange = (song: string) => {
     setForm((prev) => {
-      const exists = prev.songs.includes(song);
-      const list = exists
+      const selected = prev.songs.includes(song)
         ? prev.songs.filter((s) => s !== song)
         : [...prev.songs, song];
-      return list.length <= 2 ? { ...prev, songs: list } : prev;
+      return selected.length > 2 ? prev : { ...prev, songs: selected };
     });
   };
 
   /* ===== Submit ===== */
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!event?.is_entry_open) return setStatus("現在はエントリー期間外です。");
@@ -95,9 +94,6 @@ export default function EntryPage() {
 
   if (!event) return <Loading />;
 
-  /* ==========================================================
-      JSX
-  ========================================================== */
   return (
     <section style={section}>
       {/* ===== タイトル ===== */}
@@ -105,67 +101,48 @@ export default function EntryPage() {
         <h1 style={titleStyle}>{event.name} Entry</h1>
       </div>
 
-      {/* ===== イベント情報カード ===== */}
+      {/* ===== イベント情報 ===== */}
       <div style={eventCardsStyle}>
-        <InfoCard label="開催予定日" value={event.event_note} />
-        <InfoCard label="エントリー期間" value={event.entry_period} />
+        <InfoCard label="開催予定日" value={event.event_note || "調整中"} />
+        <InfoCard label="エントリー期間" value={event.entry_period || "調整中"} />
         <InfoCard label="ステータス" value={event.is_entry_open ? "募集中" : "準備中"} />
       </div>
 
-      {/* ===== エントリーフォーム ===== */}
+      {/* ===== フォーム ===== */}
       {event.is_entry_open ? (
         <form onSubmit={handleSubmit} style={formStyle}>
           <EntryInput name="name" placeholder="ニックネーム" required />
           <EntryInput name="email" placeholder="メールアドレス" type="email" required />
           <EntryInput name="xaccount" placeholder="Xアカウント（@なし）" required />
 
-          <Label>地域（都道府県）</Label>
-          <Select name="region" value={form.region} required options={jpPrefectures} />
-
-          <Label>希望曲（2曲まで）</Label>
-          {["SOUL LOVE", "HOWEVER", "サバイバル"].map((song) => (
-            <Checkbox
-              key={song}
-              song={song}
-              checked={form.songs.includes(song)}
-              onChange={handleSongChange}
-            />
-          ))}
-
-          <Label>第一希望パート</Label>
-          <Select name="part1" value={form.part1} required options={parts} />
-
-          <Label small>演奏歴</Label>
-          <Select name="level1" value={form.level1} required options={levels} />
-
-          <Label small>希望する難易度</Label>
-          <Select name="difficulty1" value={form.difficulty1} required options={difficulties} />
-
-          {/* ===== 第二希望 ===== */}
-          <Label>第二希望パート（任意）</Label>
-          <Select name="part2" value={form.part2} options={parts} />
-
-          <Label small>演奏歴（任意）</Label>
-          <Select name="level2" value={form.level2} options={levels} />
-
-          <Label small>希望する難易度（任意）</Label>
-          <Select name="difficulty2" value={form.difficulty2} options={difficulties} />
-
-          <Label>参加可能日</Label>
-          <textarea
-            name="availability"
-            value={form.availability}
-            onChange={handleChange}
-            style={textareaStyle}
+          <LabeledSelect
+            label="地域（都道府県）"
+            name="region"
+            value={form.region}
+            required
+            options={jpPrefectures}
           />
 
-          <textarea
-            name="message"
-            value={form.message}
-            onChange={handleChange}
-            placeholder="メッセージ（任意）"
-            style={textareaStyle}
-          />
+          {/* === 第一希望 === */}
+          <div style={partGroup}>
+            <h3 style={groupTitle}>🎯 第一希望パート</h3>
+
+            <LabeledSelect label="パート" name="part1" value={form.part1} required options={parts} />
+            <LabeledSelect label="演奏歴" name="level1" value={form.level1} required options={levels} />
+            <LabeledSelect label="希望する難易度" name="difficulty1" value={form.difficulty1} required options={difficulties} />
+          </div>
+
+          {/* === 第二希望 === */}
+          <div style={partGroup}>
+            <h3 style={groupTitle}>🅱️ 第二希望パート（任意）</h3>
+
+            <LabeledSelect label="パート" name="part2" value={form.part2} options={parts} />
+            <LabeledSelect label="演奏歴" name="level2" value={form.level2} options={levels} />
+            <LabeledSelect label="希望する難易度" name="difficulty2" value={form.difficulty2} options={difficulties} />
+          </div>
+
+          <LabeledTextarea label="参加可能日" name="availability" value={form.availability} />
+          <LabeledTextarea label="メッセージ（任意）" name="message" value={form.message} />
 
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ReCAPTCHA sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3" onChange={(t) => setCaptchaToken(t ?? "")} theme="dark" />
@@ -174,20 +151,18 @@ export default function EntryPage() {
           <button type="submit" style={buttonStyle}>エントリーする</button>
         </form>
       ) : (
-        <p style={{ textAlign: "center", marginTop: "2rem", color: "red" }}>
-          現在はエントリー期間外です。
-        </p>
+        <p style={{ textAlign: "center", marginTop: "2rem", color: "red" }}>現在はエントリー期間外です。</p>
       )}
 
       {status && <p style={{ textAlign: "center", marginTop: "1rem" }}>{status}</p>}
     </section>
   );
 
-  /* ===== Sub Components ===== */
+  /* ===== sub components ===== */
   function EntryInput(props: {
     name: keyof typeof form;
-    type?: string;
     placeholder?: string;
+    type?: string;
     required?: boolean;
   }) {
     return (
@@ -200,62 +175,74 @@ export default function EntryPage() {
     );
   }
 
-  function Checkbox({
-    song,
-    checked,
-    onChange,
-  }: {
-    song: string;
-    checked: boolean;
-    onChange: (song: string) => void;
-  }) {
+  function InfoCard({ label, value }: { label: string; value: string }) {
     return (
-      <label style={{ display: "block" }}>
-        <input type="checkbox" checked={checked} onChange={() => onChange(song)} /> {song}
-      </label>
+      <div style={boxStyle}>
+        <p style={labelMain}>{label}</p>
+        <p style={boxText}>{value}</p>
+      </div>
     );
   }
 
-  function Select({
+  function LabeledSelect({
+    label,
     name,
     value,
     required,
     options,
   }: {
+    label: string;
     name: keyof typeof form;
     value: string;
     required?: boolean;
     options: string[];
   }) {
     return (
-      <select name={name} value={value} required={required} onChange={handleChange} style={selectStyle}>
-        <option value="">選択してください</option>
-        {options.map((p) => (
-          <option key={p}>{p}</option>
-        ))}
-      </select>
+      <div style={pair}>
+        <label style={pairLabel}>{label}</label>
+        <select
+          name={name}
+          value={value}
+          required={required}
+          onChange={handleChange}
+          style={selectStyle}
+        >
+          <option value="">選択してください</option>
+          {options.map((p) => (
+            <option key={p}>{p}</option>
+          ))}
+        </select>
+      </div>
     );
   }
 
-  function Label({ children, small }: { children: React.ReactNode; small?: boolean }) {
-    return <h3 style={small ? labelSmall : labelStyle}>{children}</h3>;
-  }
-
-  function InfoCard({ label, value }: { label: string; value: string | null }) {
+  function LabeledTextarea({
+    label,
+    name,
+    value,
+  }: {
+    label: string;
+    name: keyof typeof form;
+    value: string;
+  }) {
     return (
-      <div style={boxStyle}>
-        <p style={labelMain}>{label}</p>
-        <p style={boxText}>{value ?? "調整中"}</p>
+      <div style={pair}>
+        <label style={pairLabel}>{label}</label>
+        <textarea
+          name={name}
+          value={value}
+          onChange={handleChange}
+          style={textareaStyle}
+        />
       </div>
     );
   }
 }
 
-/* ===== options ===== */
+/* ===== 選択肢 ===== */
 const parts = ["ギター", "ベース", "ドラム", "キーボード", "ボーカル", "コーラス", "パーカッション"];
 const levels = ["半年未満", "1年未満", "1〜3年", "3〜5年", "5〜10年", "10年以上"];
 const difficulties = ["✅ やさしめ", "🎯 普通", "🔥 チャレンジ", "✨ お任せ"];
-
 const jpPrefectures = ["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"];
 
 /* ===== Style ===== */
@@ -298,6 +285,31 @@ const formStyle: React.CSSProperties = {
   gap: "1.7rem",
 };
 
+const partGroup: React.CSSProperties = {
+  border: "1px solid var(--color-accent)",
+  borderRadius: "10px",
+  padding: "1rem 1.5rem",
+  marginTop: "2rem",
+};
+
+const groupTitle: React.CSSProperties = {
+  color: "var(--color-accent)",
+  fontWeight: "bold",
+  marginBottom: "1rem",
+};
+
+const pair: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "0.25rem",
+};
+
+const pairLabel: React.CSSProperties = {
+  color: "var(--color-accent)",
+  fontSize: "0.9rem",
+  fontWeight: "bold",
+};
+
 const boxStyle: React.CSSProperties = {
   border: "1px solid var(--color-accent)",
   borderRadius: "10px",
@@ -306,11 +318,8 @@ const boxStyle: React.CSSProperties = {
   minWidth: "200px",
 };
 
-const labelMain = { color: "var(--color-accent)", fontWeight: "bold" };
-const boxText = { fontSize: "1.3rem", fontWeight: "bold" };
-
-const labelStyle = { marginBottom: "0.4rem", color: "var(--color-accent)", fontWeight: "bold" };
-const labelSmall = { fontSize: "0.9rem", color: "var(--color-accent)", marginBottom: "0.2rem" };
+const labelMain: React.CSSProperties = { color: "var(--color-accent)", fontWeight: "bold" };
+const boxText: React.CSSProperties = { fontSize: "1.3rem", fontWeight: "bold" };
 
 const inputStyle: React.CSSProperties = {
   padding: "1rem",
@@ -323,6 +332,7 @@ const inputStyle: React.CSSProperties = {
 
 const selectStyle: React.CSSProperties = { ...inputStyle };
 const textareaStyle: React.CSSProperties = { ...inputStyle, minHeight: "100px" };
+
 const buttonStyle: React.CSSProperties = {
   ...inputStyle,
   border: "1px solid var(--color-accent)",
