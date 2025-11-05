@@ -267,7 +267,7 @@ await entrySubmit({
             </Field>
           </GroupBox>
 
-          <Field label="参加可能日">
+          <Field label="🗓 参加が難しい日（調整のために教えてください）">
             <textarea name="availability" value={form.availability} onChange={handleChange} style={textareaStyle} />
           </Field>
 
