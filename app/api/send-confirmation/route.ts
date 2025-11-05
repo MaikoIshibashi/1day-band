@@ -48,7 +48,20 @@ export async function POST(req: Request) {
 <p>${form.message || "未入力"}</p>
 
 <hr />
-<p>それでは当日を楽しみにしています！🤝</p>
+
+<p>
+メンバー調整後、結果をご連絡いたしますのでしばらくお待ちください✨<br />
+</p>
+
+<pre style="font-family: inherit; line-height: 1.6;">
+────────────────────────
+🎸 1Day Studio Band 運営事務局
+
+Mail：info@1daystudioband.com
+Web ：https://1daystudioband.com
+X（旧Twitter）：@1DayStudioBand
+────────────────────────
+</pre>
 `;
 
     await transporter.sendMail({
