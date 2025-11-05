@@ -187,7 +187,26 @@ export default function EntryPage() {
     setStatus("送信中...");
 
     try {
-      await entrySubmit({ ...form, eventId: event.id });
+await entrySubmit({
+  name: form.name,
+  email: form.email,
+  xaccount: form.xaccount,
+  region: form.region,   // ✅ これが無くて region 入らなかった！
+
+  part1: form.part1,
+  level1: form.level1,
+  difficulty1: form.difficulty1,
+
+  part2: form.part2 || "",
+  level2: form.level2 || "",
+  difficulty2: form.difficulty2 || "",
+
+  songs: form.songs,
+  availability: form.availability,
+  message: form.message || "",
+
+  eventId: event.id, // ✅ 名前は EntrySubmitForm と一致させる
+});
       window.location.href = "/entry/thanks";
     } catch {
       setStatus("送信に失敗しました。");

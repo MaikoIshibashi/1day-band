@@ -64,12 +64,14 @@ X（旧Twitter）：@1DayStudioBand
 </pre>
 `;
 
-    await transporter.sendMail({
-      from: `"1Day Studio Band" <${process.env.MAIL_USER}>`,
-      to: form.email,
-      subject: "【1Day Studio Band】エントリーを受け付けました！",
-      html: mailHtml,
-    });
+await transporter.sendMail({
+  from: `"1Day Studio Band" <${process.env.MAIL_USER}>`,
+  to: form.email,                    // 参加者
+  bcc: process.env.MAIL_USER,        // ✅ 運営にも送る（BCCで同じアドレスへ）
+  subject: "【1Day Studio Band】エントリーを受け付けました！",
+  html: mailHtml,
+});
+
 
     return NextResponse.json({ ok: true });
   } catch (error) {
