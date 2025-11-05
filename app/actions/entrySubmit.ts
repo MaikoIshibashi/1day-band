@@ -2,41 +2,22 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-interface EntrySubmitForm {
-  eventId: number;
-  name: string;
-  email: string;
-  xaccount: string;
-  part1: string;
-  level1: string;
-  part2?: string;
-  level2?: string;
-  availability: string;
-  message: string;
-}
-
-export async function entrySubmit(formData: EntrySubmitForm) {
+export async function entrySubmit(formData: any) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!, // ← anon じゃなく Service Key!
-    { auth: { persistSession: false } }
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // ← anon じゃない（Service key）
   );
 
-  /** ✅ members に email が登録済みか確認 */
-  const { data: member, error: selectError } = await supabase
+  // メンバー照会（email 基準）
+  const { data: member } = await supabase
     .from("members")
     .select("id")
     .eq("email", formData.email)
     .single();
 
-  if (selectError && selectError.code !== "PGRST116") {
-    // PGRST116 は "row not found" なので正常扱い
-    console.error("select members error:", selectError);
-  }
-
   let memberId = member?.id;
 
-  /** ✅ 未登録なら insert */
+  // メンバー未登録なら insert
   if (!memberId) {
     const { data: newMember, error: memberError } = await supabase
       .from("members")
@@ -48,30 +29,28 @@ export async function entrySubmit(formData: EntrySubmitForm) {
       .select()
       .single();
 
-    if (memberError) {
-      console.error("members insert error:", memberError);
-      throw new Error("メンバー登録に失敗しました");
-    }
-
+    if (memberError) throw memberError;
     memberId = newMember.id;
   }
 
-  /** ✅ entries に insert */
+  // entries 登録
   const { error: entryError } = await supabase.from("entries").insert({
     member_id: memberId,
     event_id: formData.eventId,
+
     part1: formData.part1,
     level1: formData.level1,
-    part2: formData.part2,
-    level2: formData.level2,
+    difficulty1: formData.difficulty1,
+
+    part2: formData.part2 || null,
+    level2: formData.level2 || null,
+    difficulty2: formData.difficulty2 || null,
+
     availability: formData.availability,
     message: formData.message,
   });
 
-  if (entryError) {
-    console.error("entries insert error:", entryError);
-    throw new Error("エントリー登録に失敗しました");
-  }
+  if (entryError) throw entryError;
 
   return { ok: true };
 }

@@ -5,7 +5,6 @@ export async function POST(req: Request) {
   try {
     const form = await req.json();
 
-    // === メール送信設定 ===
     const transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
       port: Number(process.env.MAIL_PORT),
@@ -16,75 +15,52 @@ export async function POST(req: Request) {
       },
     });
 
-    // === メール本文を整形 ===
-    const songsText = form.songs && form.songs.length > 0
-      ? form.songs.join("・")
-      : "未選択";
+    const mailHtml = `
+<h2>🎸 エントリーありがとうございます！</h2>
+<p>以下の内容でエントリーを受け付けました。</p>
 
-    const planText = form.plan || "未選択";
-    const regionText = form.region || "未選択";
-    const availabilityText = form.availability || "（特になし）";
-    const messageText = form.message || "（なし）";
+<hr />
+<h3>🧑‍🎤 基本情報</h3>
+<p><b>名前：</b>${form.name}</p>
+<p><b>Email：</b>${form.email}</p>
+<p><b>X：</b>@${form.xaccount}</p>
+<p><b>地域：</b>${form.region}</p>
 
-    const mailText = `
-${form.name} 様
+<h3>🎶 希望パート</h3>
+<b>第一希望:</b><br />
+パート：${form.part1}<br />
+演奏歴：${form.level1}<br />
+難易度：${form.difficulty1 || "未選択"}
 
-1Day Studio Band へのエントリーありがとうございます🎸
-以下の内容で受け付けました。
+<br /><br />
+<b>第二希望:</b><br />
+パート：${form.part2 || "（なし）"}<br />
+演奏歴：${form.level2 || "（なし）"}<br />
+難易度：${form.difficulty2 || "（なし）"}
 
-────────────────────
-■ ニックネーム
-${form.name}
+<h3>🎤 希望曲</h3>
+<p>${form.songs.join(" / ")}</p>
 
-■ メールアドレス
-${form.email}
+<h3>📅 参加可能日</h3>
+<p>${form.availability || "未入力"}</p>
 
-■ Xアカウント
-@${form.xaccount}
+<h3>💬 メッセージ</h3>
+<p>${form.message || "未入力"}</p>
 
-■ お住まいの地域
-${regionText}
-
-■ 第一希望
-${form.part1}（演奏歴: ${form.level1}）
-
-■ 第二希望
-${form.part2 ? `${form.part2}（演奏歴: ${form.level2 || "未記入"}）` : "なし"}
-
-■ 希望曲（2曲）
-${songsText}
-
-■ 参加可能日
-${availabilityText}
-
-■ メッセージ
-${messageText}
-────────────────────
-
-選考結果は 1週間以内にご連絡いたします。
-ご応募内容をもとに、パートや全体のバランスを考慮して選考を進めさせていただきます。
-
-================================
-1Day Studio Band 🎸
-公式サイト: https://1daystudioband.com
-公式メール: info@1daystudioband.com
-================================
+<hr />
+<p>それでは当日を楽しみにしています！🤝</p>
 `;
 
-    // === メール送信 ===
-    const mailOptions = {
-      from: `"1Day Studio Band" <info@1daystudioband.com>`,
-      to: form.email, // 応募者宛
-      bcc: process.env.MAIL_USER, // 運営にもコピー
-      subject: "【1Day Studio Band】エントリーを受け付けました",
-      text: mailText,
-    };
+    await transporter.sendMail({
+      from: `"1Day Studio Band" <${process.env.MAIL_USER}>`,
+      to: form.email,
+      subject: "【1Day Studio Band】エントリーを受け付けました！",
+      html: mailHtml,
+    });
 
-    await transporter.sendMail(mailOptions);
-
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("メール送信エラー:", err);
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("メール送信エラー:", error);
+    return NextResponse.json({ ok: false }, { status: 500 });
   }
 }

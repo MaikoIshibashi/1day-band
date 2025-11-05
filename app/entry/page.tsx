@@ -18,20 +18,23 @@ export default function EntryPage() {
   const [captchaToken, setCaptchaToken] = useState("");
   const [status, setStatus] = useState("");
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    xaccount: "",
-    region: "",
-    part1: "",
-    level1: "",
-    part2: "",
-    level2: "",
-    songs: [] as string[],
-    plan: "",
-    availability: "",
-    message: "",
-  });
+const [form, setForm] = useState({
+  name: "",
+  email: "",
+  xaccount: "",
+  region: "",
+  part1: "",
+  level1: "",
+  difficulty1: "",   // ← 追加
+  part2: "",
+  level2: "",
+  difficulty2: "",   // ← 追加
+  songs: [] as string[],
+  plan: "",
+  availability: "",
+  message: "",
+});
+
 
   // === 最新イベント読み込み ===
   useEffect(() => {
@@ -192,14 +195,58 @@ const handleChange = (
           <input name="email" value={form.email} onChange={handleChange} type="email" placeholder="メールアドレス" required style={inputStyle} />
           <input name="xaccount" value={form.xaccount} onChange={handleChange} placeholder="Xアカウント（@なし）" required style={inputStyle} />
 
-          {/* 地域 */}
-          <h3 style={{ color: "var(--color-accent)" }}>地域</h3>
-          <select name="region" value={form.region} onChange={handleChange} required style={selectStyle}>
-            <option value="">地域を選択</option>
-            <option>北海道</option><option>東北</option><option>関東</option>
-            <option>中部</option><option>近畿</option><option>中国</option>
-            <option>四国</option><option>九州</option><option>沖縄</option>
-          </select>
+<h3 style={{ color: "var(--color-accent)" }}>地域（都道府県）</h3>
+<select name="region" value={form.region} onChange={handleChange} required style={selectStyle}>
+  <option value="">都道府県を選択</option>
+  <option>北海道</option>
+  <option>青森県</option>
+  <option>岩手県</option>
+  <option>宮城県</option>
+  <option>秋田県</option>
+  <option>山形県</option>
+  <option>福島県</option>
+  <option>茨城県</option>
+  <option>栃木県</option>
+  <option>群馬県</option>
+  <option>埼玉県</option>
+  <option>千葉県</option>
+  <option>東京都</option>
+  <option>神奈川県</option>
+  <option>新潟県</option>
+  <option>富山県</option>
+  <option>石川県</option>
+  <option>福井県</option>
+  <option>山梨県</option>
+  <option>長野県</option>
+  <option>岐阜県</option>
+  <option>静岡県</option>
+  <option>愛知県</option>
+  <option>三重県</option>
+  <option>滋賀県</option>
+  <option>京都府</option>
+  <option>大阪府</option>
+  <option>兵庫県</option>
+  <option>奈良県</option>
+  <option>和歌山県</option>
+  <option>鳥取県</option>
+  <option>島根県</option>
+  <option>岡山県</option>
+  <option>広島県</option>
+  <option>山口県</option>
+  <option>徳島県</option>
+  <option>香川県</option>
+  <option>愛媛県</option>
+  <option>高知県</option>
+  <option>福岡県</option>
+  <option>佐賀県</option>
+  <option>長崎県</option>
+  <option>熊本県</option>
+  <option>大分県</option>
+  <option>宮崎県</option>
+  <option>鹿児島県</option>
+  <option>沖縄県</option>
+</select>
+
 
           {/* 希望曲 */}
           <h3 style={{ color: "var(--color-accent)" }}>希望曲（2曲選択）</h3>
@@ -209,33 +256,68 @@ const handleChange = (
             </label>
           ))}
 
-          {/* 希望パート */}
-          <h3 style={{ color: "var(--color-accent)" }}>第一希望パート</h3>
-          <select name="part1" value={form.part1} onChange={handleChange} required style={selectStyle}>
-            <option value="">第一希望パートを選択</option>
-            <option>ギター</option><option>ベース</option><option>ドラム</option>
-            <option>キーボード</option><option>ボーカル</option>
-            <option>コーラス</option><option>パーカッション</option>
-          </select>
-          <select name="level1" value={form.level1} onChange={handleChange} required style={selectStyle}>
-            <option value="">演奏歴を選択</option>
-            <option>半年未満</option><option>1年未満</option><option>1〜3年</option>
-            <option>3〜5年</option><option>5〜10年</option><option>10年以上</option>
-          </select>
+      <h3 style={{ color: "var(--color-accent)" }}>第一希望パート</h3>
 
-          {/* 第二希望 */}
-          <h3 style={{ color: "var(--color-accent)" }}>第二希望パート</h3>
-          <select name="part2" value={form.part2} onChange={handleChange} style={selectStyle}>
-            <option value="">第二希望パートを選択（任意）</option>
-            <option>ギター</option><option>ベース</option><option>ドラム</option>
-            <option>キーボード</option><option>ボーカル</option>
-            <option>コーラス</option><option>パーカッション</option>
-          </select>
-          <select name="level2" value={form.level2} onChange={handleChange} style={selectStyle}>
-            <option value="">演奏歴を選択（任意）</option>
-            <option>半年未満</option><option>1年未満</option><option>1〜3年</option>
-            <option>3〜5年</option><option>5〜10年</option><option>10年以上</option>
-          </select>
+      <select name="part1" value={form.part1} onChange={handleChange} required style={selectStyle}>
+        <option value="">第一希望パートを選択</option>
+        <option>ギター</option><option>ベース</option><option>ドラム</option>
+        <option>キーボード</option><option>ボーカル</option>
+        <option>コーラス</option><option>パーカッション</option>
+      </select>
+
+      <h4 style={{ marginTop: "1rem", color: "var(--color-accent)" }}>演奏歴</h4>
+      <select name="level1" value={form.level1} onChange={handleChange} required style={selectStyle}>
+        <option value="">演奏歴を選択</option>
+        <option>半年未満</option><option>1年未満</option><option>1〜3年</option>
+        <option>3〜5年</option><option>5〜10年</option><option>10年以上</option>
+      </select>
+
+      <h4 style={{ marginTop: "1rem", color: "var(--color-accent)" }}>希望する難易度</h4>
+      <select name="difficulty1" value={form.difficulty1} onChange={handleChange} required style={selectStyle}>
+        <option value="">希望の難易度を選択</option>
+        <option value="やさしめ">✅ やさしめ</option>
+        <option value="普通">🎯 普通</option>
+        <option value="チャレンジ">🔥 チャレンジ</option>
+      </select>
+
+
+<h3 style={{ color: "var(--color-accent)" }}>第二希望パート（任意）</h3>
+
+<select name="part2" value={form.part2} onChange={handleChange} style={selectStyle}>
+  <option value="">第二希望パートを選択（任意）</option>
+  <option>ギター</option><option>ベース</option><option>ドラム</option>
+  <option>キーボード</option><option>ボーカル</option>
+  <option>コーラス</option><option>パーカッション</option>
+</select>
+
+<h4 style={{ marginTop: "1rem", color: "var(--color-accent)" }}>演奏歴（任意）</h4>
+<select
+  name="level2"
+  value={form.level2}
+  onChange={handleChange}
+  style={selectStyle}
+>
+  <option value="">演奏歴を選択（任意）</option>
+  <option>半年未満</option><option>1年未満</option><option>1〜3年</option>
+  <option>3〜5年</option><option>5〜10年</option><option>10年以上</option>
+</select>
+
+<h4 style={{ marginTop: "1rem", color: "var(--color-accent)" }}>
+  希望する難易度（任意）
+</h4>
+<select
+  name="difficulty2"
+  value={form.difficulty2}
+  onChange={handleChange}
+  style={selectStyle}
+>
+  <option value="">希望の難易度を選択（任意）</option>
+  <option value="やさしめ">✅ やさしめ</option>
+  <option value="普通">🎯 普通</option>
+  <option value="チャレンジ">🔥 チャレンジ</option>
+</select>
+
+
 
           {/* 参加可能日 */}
           <h3 style={{ color: "var(--color-accent)" }}>参加可能日</h3>
