@@ -178,40 +178,65 @@ export default function EntryPage() {
   };
 
   /* 送信 */
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+/* 送信 */
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    if (!event?.is_entry_open) return setStatus("現在はエントリー期間外です。");
-    if (!captchaToken) return setStatus("reCAPTCHA を確認してください。");
+  if (!event?.is_entry_open) return setStatus("現在はエントリー期間外です。");
+  if (!captchaToken) return setStatus("reCAPTCHA を確認してください。");
 
-    setStatus("送信中...");
+  setStatus("送信中...");
 
-    try {
-await entrySubmit({
-  name: form.name,
-  email: form.email,
-  xaccount: form.xaccount,
-  region: form.region,   // ✅ これが無くて region 入らなかった！
+  try {
+    await entrySubmit({
+      name: form.name,
+      email: form.email,
+      xaccount: form.xaccount,
+      region: form.region,
 
-  part1: form.part1,
-  level1: form.level1,
-  difficulty1: form.difficulty1,
+      part1: form.part1,
+      level1: form.level1,
+      difficulty1: form.difficulty1,
 
-  part2: form.part2 || "",
-  level2: form.level2 || "",
-  difficulty2: form.difficulty2 || "",
+      part2: form.part2 || "",
+      level2: form.level2 || "",
+      difficulty2: form.difficulty2 || "",
 
-  songs: form.songs,
-  availability: form.availability,
-  message: form.message || "",
+      songs: form.songs,
+      availability: form.availability,
+      message: form.message || "",
 
-  eventId: event.id, // ✅ 名前は EntrySubmitForm と一致させる
-});
-      window.location.href = "/entry/thanks";
-    } catch {
-      setStatus("送信に失敗しました。");
-    }
-  };
+      eventId: event.id,
+    });
+
+    // ✅ メール送信
+    await fetch("/api/send-confirmation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        xaccount: form.xaccount,
+        region: form.region,
+        part1: form.part1,
+        level1: form.level1,
+        difficulty1: form.difficulty1,
+        part2: form.part2,
+        level2: form.level2,
+        difficulty2: form.difficulty2,
+        songs: form.songs,
+        availability: form.availability,
+        message: form.message,
+      }),
+    });
+
+    window.location.href = "/entry/thanks";
+  } catch (err) {
+    console.error(err);
+    setStatus("送信に失敗しました。");
+  }
+};
+
 
   if (!event) return <p style={{ color: "white" }}>読み込み中...</p>;
 
