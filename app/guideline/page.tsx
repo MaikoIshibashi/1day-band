@@ -39,27 +39,44 @@ export default function GuidelinePage() {
         </header>
 
         {/* 🎧 演奏について */}
-        <section>
-          <h2 className="text-xl font-semibold text-purple-300 mb-3">🎧 演奏について</h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-200">
-            <li>事前に音源や譜面を確認し、スムーズな進行にご協力をお願いします。</li>
-            <li>パート割などに不安があれば、事前にご相談ください。担当パートを多少アレンジするなどはOKです！</li>
-            <li>割り当てられたパートや担当箇所を尊重し、他のメンバーの演奏を妨げないようにお願いします。</li>
-            <li>みんなでひとつの音を作る意識を持ち、チーム全体での調和を大切にしましょう🎶</li>
-          </ul>
-        </section>
+      <section>
+        <h2 className="text-xl font-semibold text-purple-300 mb-3">🎧 演奏について</h2>
+        <ul className="list-disc list-inside space-y-2 text-gray-200">
+          <li>事前に音源や譜面を確認し、スムーズな進行にご協力をお願いします。</li>
+          <li>
+            パート分担に不安がある場合は、事前にご相談ください。
+            必要に応じてパートの調整やアレンジにも柔軟に対応します！
+          </li>
+          <li>割り当てられたパートや担当箇所を尊重し、他のメンバーの演奏を妨げないようにお願いします。</li>
+          <li>みんなでひとつの音を作る意識を持ち、チーム全体での調和を大切にしましょう🎶</li>
+        </ul>
+      </section>
+
 
         {/* 💬 コミュニケーションについて */}
         <section>
-        <h2 className="text-xl font-semibold text-purple-300 mb-3">💬 コミュニケーションについて</h2>
-        <ul className="list-disc list-inside space-y-2 text-gray-200">
+          <h2 className="text-xl font-semibold text-purple-300 mb-3">💬 コミュニケーションについて</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-200">
             <li>
-            ご参加の方にはグループDMをご案内しますが、こちらはイベント当日までの連絡や交流を目的としています。
+              グループDMは、イベント当日までの <strong>連絡共有と交流の場</strong> として利用します。
             </li>
-            <li>他イベントや個人活動などの告知や宣伝、勧誘などはご自身のSNSなどでお願いします。</li>
-            <li>批判・マウントなど、他の方が不快に感じる行為はお控えください。</li>
-        </ul>
+            <li>
+              <strong>会話に無理に参加したり、毎回返信いただく必要はありません。</strong>
+              ご自身のペースでOKです😊
+            </li>
+            <li>
+              ただし、<strong>運営からの全体連絡・確認が必要な内容には</strong><br />
+              👍などのリアクション or 簡単な返信での確認をお願いいたします。
+            </li>
+            <li>
+              他イベントや個人活動などの告知・宣伝・勧誘はご自身のSNSでお願いします。
+            </li>
+            <li>
+              批判・マウントなど、他の方が不快に感じる行為は禁止とさせていただきます。
+            </li>
+          </ul>
         </section>
+
 
 
         {/* 🤝 マナーとリスペクト */}
