@@ -21,10 +21,10 @@ type EntrySubmitForm = {
 export async function entrySubmit(formData: EntrySubmitForm) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // ✅ 必ず service_role
   );
 
-  /* ✅ 1. members.xaccount で重複確認 */
+  /* ✅ members.xaccount で判定 */
   const { data: existingMember } = await supabase
     .from("members")
     .select("id")
@@ -33,30 +33,28 @@ export async function entrySubmit(formData: EntrySubmitForm) {
 
   let memberId = existingMember?.id;
 
-  /* ✅ 2. なければ members に insert */
+  /* ✅ members insert (name が正しい) */
   if (!memberId) {
     const { data: newMember, error: memberError } = await supabase
       .from("members")
       .insert({
-        nickname: formData.name,     // ← nickname カラムに保存（ここ重要）
+        name: formData.name,        // ← ✅ nickname じゃなくて name!!
         email: formData.email,
         xaccount: formData.xaccount,
-        region: formData.region,
       })
       .select()
       .single();
-
     if (memberError) throw memberError;
     memberId = newMember.id;
   }
 
-  /* ✅ 3. entries は常に insert */
+  /* ✅ entries insert */
   const { error: entryError } = await supabase.from("entries").insert({
     member_id: memberId,
     event_id: formData.eventId,
 
-    nickname: formData.name,        // ← entries.nickname に保存
-    region: formData.region,        // ← entries.region に保存
+    nickname: formData.name,   // ✅ entries は nickname カラムに入れる
+    region: formData.region,   // ✅ entries.region に入る
 
     part1: formData.part1,
     level1: formData.level1,
@@ -69,7 +67,6 @@ export async function entrySubmit(formData: EntrySubmitForm) {
     songs: formData.songs,
     availability: formData.availability,
     message: formData.message || null,
-
     status: "pending",
   });
 
