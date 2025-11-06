@@ -12,8 +12,7 @@ export default function Contact() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // マウント時に一度だけふわっと発火
-    setVisible(false); // ←一旦リセット
+    setVisible(false);
     const timer = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
@@ -50,14 +49,14 @@ export default function Contact() {
     <section
       className={`reveal ${visible ? "visible" : ""}`}
       style={{
-        minHeight: "100vh",
-        padding: "8rem 1.5rem 4rem", // ← ここを4rem→6remに変更（上に余白追加）
+        minHeight: "calc(100dvh - 80px)", // ← ✅ スマホでも高さが変わらない
+        padding: "8rem 1.5rem 8rem",      // ← 下にも余白追加してフッターと干渉させない
         backgroundColor: "var(--color-background)",
         color: "var(--color-foreground)",
         textAlign: "center",
-        scrollMarginTop: "80px", // ← これも追加するとページ内リンクにも対応
+        scrollMarginTop: "80px",
       }}
->
+    >
       <h1 style={{ fontSize: "2rem", color: "var(--color-accent)" }}>
         お問い合わせ
       </h1>
@@ -82,13 +81,7 @@ export default function Contact() {
           type="text"
           placeholder="お名前"
           required
-          style={{
-            padding: "0.8rem",
-            borderRadius: "6px",
-            border: "1px solid #444",
-            backgroundColor: "#111",
-            color: "white",
-          }}
+          style={inputStyle}
         />
         <input
           value={email}
@@ -96,24 +89,12 @@ export default function Contact() {
           type="email"
           placeholder="メールアドレス"
           required
-          style={{
-            padding: "0.8rem",
-            borderRadius: "6px",
-            border: "1px solid #444",
-            backgroundColor: "#111",
-            color: "white",
-          }}
+          style={inputStyle}
         />
         <select
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
-          style={{
-            padding: "0.8rem",
-            borderRadius: "6px",
-            border: "1px solid #444",
-            backgroundColor: "#111",
-            color: "white",
-          }}
+          style={inputStyle}
         >
           <option>参加に関して</option>
           <option>お支払いについて</option>
@@ -125,14 +106,11 @@ export default function Contact() {
           placeholder="お問い合わせ内容"
           required
           style={{
-            padding: "0.8rem",
-            borderRadius: "6px",
-            border: "1px solid #444",
-            backgroundColor: "#111",
-            color: "white",
+            ...inputStyle,
             minHeight: "120px",
           }}
         />
+
         <div style={{ display: "flex", justifyContent: "center" }}>
           <ReCAPTCHA
             sitekey="6Ld9bcsrAAAAAP9WT1TovVk8Vg4LxGkdXdM1yAI3"
@@ -140,18 +118,8 @@ export default function Contact() {
             theme="dark"
           />
         </div>
-        <button
-          type="submit"
-          style={{
-            padding: "0.8rem",
-            borderRadius: "6px",
-            border: "none",
-            backgroundColor: "var(--color-accent)",
-            color: "white",
-            fontSize: "1rem",
-            cursor: "pointer",
-          }}
-        >
+
+        <button type="submit" style={buttonStyle}>
           送信する
         </button>
       </form>
@@ -160,3 +128,21 @@ export default function Contact() {
     </section>
   );
 }
+
+const inputStyle: React.CSSProperties = {
+  padding: "0.8rem",
+  borderRadius: "6px",
+  border: "1px solid #444",
+  backgroundColor: "#111",
+  color: "white",
+};
+
+const buttonStyle: React.CSSProperties = {
+  padding: "0.8rem",
+  borderRadius: "6px",
+  border: "none",
+  backgroundColor: "var(--color-accent)",
+  color: "white",
+  fontSize: "1rem",
+  cursor: "pointer",
+};
