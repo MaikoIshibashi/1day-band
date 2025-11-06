@@ -251,6 +251,40 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         <InfoCard label="エントリー期間" value={event.entry_period ?? "調整中"} />
         <InfoCard label="ステータス" value={event.is_entry_open ? "募集中" : "準備中"} />
       </div>
+{/* 🔹 注意事項案内 */}
+<div
+  style={{
+    backgroundColor: "#111",
+    border: "1px solid var(--color-accent)",
+    borderRadius: "12px",
+    padding: "1rem 1.3rem",
+    marginBottom: "2rem",
+    color: "white",
+    lineHeight: 1.6,
+  }}
+>
+  <p style={{ fontWeight: "bold", color: "var(--color-accent)", marginBottom: "0.6rem" }}>
+    ✅ エントリー前にご確認ください
+  </p>
+
+  <p style={{ marginBottom: "0.8rem" }}>
+    参加にあたってのルールや注意事項をまとめています。
+    <br />
+    必ず <strong>ガイドラインをお読みいただいた上で</strong> エントリーをお願いします。
+  </p>
+
+  <a
+    href="/guideline"
+    target="_blank"
+    style={{
+      color: "var(--color-accent)",
+      fontWeight: "bold",
+      textDecoration: "underline",
+    }}
+  >
+    ▶ ガイドライン / 注意事項を読む
+  </a>
+</div>
 
       {event.is_entry_open ? (
         <form onSubmit={handleSubmit} style={formStyle}>
