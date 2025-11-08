@@ -266,11 +266,10 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     ✅ エントリー前にご確認ください
   </p>
   <p>参加にあたってのルールや注意事項をまとめています。</p>
-  <p>必ず <strong>ガイドラインをお読みいただいた上で</strong> エントリーをお願いします🙏</p>
-
-  <a href="/guideline" style={{ color: "var(--color-accent)" }}>
-    ▶ ガイドライン / 注意事項を読む
-  </a>
+  <p>
+    ガイドラインをご確認のうえエントリーをお願いします。
+    エントリーをいただいた時点で同意いただいたものとみなします。
+  </p>
 </div>
 
 
