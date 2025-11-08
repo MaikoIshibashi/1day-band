@@ -276,29 +276,32 @@ export default function FAQPage() {
         scrollMarginTop: "80px",
       }}
     >
-      {/* 🔹タイトル */}
-      <h2
-        style={{
-          fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
-          color: "var(--color-accent)",
-          textAlign: "center",
-          lineHeight: "1.2",
-          whiteSpace: "normal",
-          wordBreak: "normal",
-          marginBottom: "2.5rem",
-        }}
-      >
-        FAQ
-        <span
-          style={{
-            fontSize: "clamp(1rem, 3vw, 1.2rem)",
-            opacity: 0.8,
-            marginLeft: "0.3rem",
-          }}
-        >
-          （よくある質問）
-        </span>
-      </h2>
+  {/* 🔹タイトル */}
+  <h2
+    style={{
+      fontSize: "clamp(2.2rem, 5vw, 3rem)",   // ← 文字を大きく
+      color: "var(--color-accent)",
+      textAlign: "center",
+      lineHeight: "1.3",
+      marginBottom: "3rem",
+      fontWeight: 800,                        // ← はっきり見えるように
+    }}
+  >
+    FAQ
+    <span
+      style={{
+        display: "block",                     // ← スマホで改行
+        fontSize: "clamp(1rem, 3vw, 1.4rem)",
+        opacity: 0.85,
+        marginTop: "0.3rem",
+        fontWeight: 400,                      // ← サブタイトルは軽め
+        whiteSpace: "nowrap",                 // ← PCでも変な折返しが起きない
+      }}
+    >
+      （よくある質問）
+    </span>
+  </h2>
+
 
       {/* 🔹FAQ本体 */}
       <div className="faq-container" style={{ maxWidth: "800px", margin: "0 auto" }}>
