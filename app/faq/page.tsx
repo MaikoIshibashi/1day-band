@@ -114,7 +114,7 @@ export default function FAQPage() {
         {
           q: "みんながどのくらい練習が進んでいるか知りたいです。",
           a: `Membersサイトより各自練習動画をアップできるようにしていきますのでそちらを参考にされてください🌐
-
+          
 また、不明点や質問は同じ悩みを持っている方も解決できることがありますのでグループ内でどんどん共有していきましょう♪`,
         },
         {
@@ -358,22 +358,22 @@ export default function FAQPage() {
                         <span style={{ fontWeight: "bold" }}>Q. {faq.q}</span>
                         <span>{isOpen ? "−" : "+"}</span>
                       </div>
+
                       {/* 回答 */}
                       <div
                         className="faq-answer"
                         style={{
                           maxHeight: isOpen ? "1000px" : "0px",
+                          opacity: isOpen ? 1 : 0,
                           overflow: "hidden",
-                          transition: "max-height 0.3s ease",   // ← ここ変更（opacity を外す）
+                          transition: "all 0.3s ease",
                           backgroundColor: "#262626",
                           color: "#ddd",
                           padding: isOpen ? "0.5rem 1rem" : "0 1rem",
                           lineHeight: "1.4",
                           whiteSpace: "pre-line",
-                          willChange: "max-height",              // ← safari の再描画対策で追加
                         }}
                       >
-
                         <ReactMarkdown
                           components={{
                             p: ({ children }) => (
