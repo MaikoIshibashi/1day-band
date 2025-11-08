@@ -85,10 +85,9 @@ export default function FAQPage() {
           q: "演奏レベルはどのくらいですか？",
           a: `演奏する曲とパートによって難易度は異なります。
 譜面はこちらでバンドスコアを用意しますがそれ通りに演奏する必要はありません。
-
 ただし同じ楽器の演奏者がいる場合は相手の演奏を妨げないよう指定がある場合もありますのでご注意ください🙇‍♀️
-弾いてみた動画や簡単パートに置き換えていただくこともOKです！
 
+弾いてみた動画や簡単パートに置き換えていただくこともOKです！
 特にご希望がなければ演奏者のスキルと希望難易度に応じてパート割をします。  
 ご希望の方には簡単なパートを優先的にご案内します👍
 また、フルパート弾けなくても大丈夫ですのでご安心ください💕`,
@@ -97,9 +96,8 @@ export default function FAQPage() {
           q: "音作りはどのようにしたら良いですか？",
           a: `ギターなど事前に音作りが必要なパートはエフェクターなどで各自作成をお願いします。
 お持ちでない場合はアンプの調整のみでも大丈夫です。
-音色の細かい指定はありませんがどのように作って良いか不明な場合は
 
-音源の音色に寄せていくと理想に近づきやすいかなと思います^^
+音色の細かい指定はありませんがどのように作って良いか不明な場合は音源の音色に寄せていくと理想に近づきやすいかなと思います^^
 本番では練習開始前に各パートの音量や音色やバランスを確認します。  
 エフェクター設定や音作りに不安がある方は遠慮なくご相談ください🎛️`,
         },
@@ -116,6 +114,7 @@ export default function FAQPage() {
         {
           q: "みんながどのくらい練習が進んでいるか知りたいです。",
           a: `Membersサイトより各自練習動画をアップできるようにしていきますのでそちらを参考にされてください🌐
+
 また、不明点や質問は同じ悩みを持っている方も解決できることがありますのでグループ内でどんどん共有していきましょう♪`,
         },
         {
@@ -359,22 +358,22 @@ export default function FAQPage() {
                         <span style={{ fontWeight: "bold" }}>Q. {faq.q}</span>
                         <span>{isOpen ? "−" : "+"}</span>
                       </div>
-
                       {/* 回答 */}
                       <div
                         className="faq-answer"
                         style={{
                           maxHeight: isOpen ? "1000px" : "0px",
-                          opacity: isOpen ? 1 : 0,
                           overflow: "hidden",
-                          transition: "all 0.3s ease",
+                          transition: "max-height 0.3s ease",   // ← ここ変更（opacity を外す）
                           backgroundColor: "#262626",
                           color: "#ddd",
                           padding: isOpen ? "0.5rem 1rem" : "0 1rem",
                           lineHeight: "1.4",
                           whiteSpace: "pre-line",
+                          willChange: "max-height",              // ← safari の再描画対策で追加
                         }}
                       >
+
                         <ReactMarkdown
                           components={{
                             p: ({ children }) => (
