@@ -58,7 +58,7 @@ export default function GuidelinePage() {
           <h2 className="text-xl font-semibold text-purple-300 mb-3">💬 コミュニケーションについて</h2>
           <ul className="list-disc list-inside space-y-2 text-gray-200">
           <li>
-            グループDMは、イベント当日までの連絡共有と交流の場として利用します。
+            グループDMは、YouTube公開までの連絡共有と交流の場として利用します。
           </li>
           <li>
             会話に無理に参加したり、毎回返信していただく必要はありません。ご自身のペースで大丈夫です😊
