@@ -252,24 +252,41 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         <InfoCard label="ステータス" value={event.is_entry_open ? "募集中" : "準備中"} />
       </div>
 {/* ✅ エントリー前のガイドライン */}
+{/* ✅ エントリー前のガイドライン */}
 <div
   style={{
     border: "1px solid var(--color-accent)",
     borderRadius: "12px",
     padding: "1.2rem",
     marginTop: "2rem",
-    maxWidth: "600px",   // ← 追加
-    marginInline: "auto", // ← 追加（中央寄せ）
+    maxWidth: "600px",
+    marginInline: "auto",
   }}
 >
   <p style={{ fontWeight: "bold", color: "var(--color-accent)" }}>
     ✅ エントリー前にご確認ください
   </p>
+
   <p>参加にあたってのルールや注意事項をまとめています。</p>
+
   <p>
     ガイドラインをご確認のうえエントリーをお願いします。<br />
     エントリーをいただいた時点で同意いただいたものとみなします。
   </p>
+
+  {/* ✨ 🔗 ここがリンク部分（復活） */}
+  <a
+    href="/guideline"
+    style={{
+      display: "inline-block",
+      marginTop: "0.8rem",
+      color: "var(--color-accent)",
+      textDecoration: "underline",
+      fontWeight: 600,
+    }}
+  >
+    ▶ ガイドライン / 注意事項を読む
+  </a>
 </div>
 
 
