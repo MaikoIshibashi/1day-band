@@ -30,7 +30,7 @@ export const metadata: Metadata = {
         url: "/logo.png", // または /og-image.png に差し替え可
         width: 800,
         height: 600,
-        alt: "1Day Studio Band ロゴ",
+        alt: "1Day Studio Band 〜音楽仲間と作る特別な一日を！",
       },
     ],
     locale: "ja_JP",
