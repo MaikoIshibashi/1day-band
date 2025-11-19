@@ -68,7 +68,7 @@ export default function PreviewPage() {
 
   {/* ↓ カード内に配置 */}
   <p style={{ fontSize: "0.95rem", color: "#aaa", marginTop: "1rem" }}>
-    【エントリー期間】2025/11/24 12:00 - 2025/11/30 23:59
+    【エントリー期間】2025/11/23（日）12:00 - 2025/11/30（日）12:00
   </p>
   </div>
 
