@@ -51,7 +51,7 @@ export default function PreviewPage() {
   <p style={{ marginTop: "0.5rem", fontSize: "1.2rem", color: "#fff" }}>
     2026.04 開催予定
   </p>
-  <p style={{ marginTop: "0.5rem", color: "gray" }}>🟣 募集開始前</p>
+  <p style={{ marginTop: "0.5rem", color: "gray" }}>🟣 エントリー間もなく開始！</p>
 <div
   style={{
     display: "flex",
@@ -68,7 +68,7 @@ export default function PreviewPage() {
 
   {/* ↓ カード内に配置 */}
   <p style={{ fontSize: "0.95rem", color: "#aaa", marginTop: "1rem" }}>
-    エントリー開始までしばらくお待ちください^^/
+    【エントリー期間】2025/11/24 - 2025/11/30
   </p>
   </div>
 
