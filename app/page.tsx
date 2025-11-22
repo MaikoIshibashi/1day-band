@@ -274,16 +274,6 @@ export default function PreviewPage() {
       style={{ borderRadius: "8px" }}
     ></iframe>
 
-      <iframe
-      width="100%"
-      height="200"
-      src="https://www.youtube.com/embed/juiP3-nxLr8?si=wp5E6O4a_lesZ-u1"
-      title="第3回 本番動画1"
-      frameBorder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-      style={{ borderRadius: "8px" }}
-    ></iframe>  
     <iframe
       width="100%"
       height="200"
