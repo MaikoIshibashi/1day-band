@@ -252,7 +252,29 @@ export default function PreviewPage() {
       margin: "1.5rem auto",
     }}
   >
-        <iframe
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/juiP3-nxLr8?si=wp5E6O4a_lesZ-u1"
+      title="第3回 SOUL LOVE"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+
+    <iframe
+      width="100%"
+      height="200"
+      src="https://www.youtube.com/embed/pzzRLBBbJhg?si=SwtKqrO7JLXbZUhE"
+      title="第3回 グロリアス"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ borderRadius: "8px" }}
+    ></iframe>
+
+      <iframe
       width="100%"
       height="200"
       src="https://www.youtube.com/embed/juiP3-nxLr8?si=wp5E6O4a_lesZ-u1"
@@ -261,7 +283,7 @@ export default function PreviewPage() {
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
       style={{ borderRadius: "8px" }}
-    ></iframe>
+    ></iframe>  
     <iframe
       width="100%"
       height="200"
