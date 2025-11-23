@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 <h3>🎤 希望曲</h3>
 <p>${form.songs.join(" / ")}</p>
 
-<h3>📅 参加可能日</h3>
+<h3>📅 参加が難しい日</h3>
 <p>${form.availability || "未入力"}</p>
 
 <h3>💬 メッセージ</h3>
