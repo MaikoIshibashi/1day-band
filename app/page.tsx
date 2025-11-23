@@ -45,13 +45,41 @@ export default function PreviewPage() {
     textAlign: "center",
   }}
 >
-  <h2 style={{ fontSize: "1.8rem", color: "var(--color-accent)" }}>
-    4th in Fukuoka
-  </h2>
-  <p style={{ marginTop: "0.5rem", fontSize: "1.2rem", color: "#fff" }}>
-    2026.04 開催予定
-  </p>
-  <p style={{ marginTop: "0.5rem", color: "gray" }}>🟣 エントリー間もなく開始！</p>
+<h2 style={{ fontSize: "1.8rem", color: "var(--color-accent)" }}>
+  4th in Fukuoka
+</h2>
+<p style={{ marginTop: "0.5rem", fontSize: "1.2rem", color: "#fff" }}>
+  2026.04 開催予定
+</p>
+<p style={{ marginTop: "0.5rem", color: "gray" }}>
+  🟣 募集中
+</p>
+
+{/* 👇ここを移動！ */}
+<Link
+  href="/entry"
+  style={{
+    marginTop: "0.8rem",
+    display: "inline-block",
+    padding: "0.8rem 1.6rem",
+    backgroundColor: "var(--color-accent)",
+    color: "#000",
+    fontWeight: "600",
+    borderRadius: "8px",
+    textDecoration: "none",
+    boxShadow: "0 0 12px rgba(168,85,247,0.4)",
+    transition: "0.25s",
+  }}
+  onMouseOver={(e) => {
+    e.currentTarget.style.backgroundColor = "#c084fc";
+  }}
+  onMouseOut={(e) => {
+    e.currentTarget.style.backgroundColor = "var(--color-accent)";
+  }}
+>
+  エントリーページはこちら ✨
+</Link>
+
 <div
   style={{
     display: "flex",
@@ -61,11 +89,10 @@ export default function PreviewPage() {
     marginTop: "1.8rem",
   }}
 >
-  <InterestButton />
+  {/* ここにあった興味あるボタンは削除 */}
+
   <SupportButton />
 </div>
-
-
   {/* ↓ カード内に配置 */}
   <p style={{ fontSize: "0.95rem", color: "#aaa", marginTop: "1rem" }}>
     【エントリー期間】2025/11/23 12:00 〜 2025/11/30 12:00
