@@ -259,6 +259,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     borderRadius: "12px",
     padding: "1.2rem",
     marginTop: "2rem",
+    marginBottom: "2.5rem",  // ← ココ追加！ フォームとの間にスペース
     maxWidth: "600px",
     marginInline: "auto",
   }}
