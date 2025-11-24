@@ -38,10 +38,10 @@ export async function POST(req: Request) {
 演奏歴：${form.level2 || "（なし）"}<br />
 難易度：${form.difficulty2 || "（なし）"}
 
-<h3>🎤 希望曲</h3>
+<h3>🎤 希望曲</h3>-
 <p>${form.songs.join(" / ")}</p>
 
-<h3>📅 参加が難しい日</h3>
+<h3>📅 参加不可能日</h3>
 <p>${form.availability || "未入力"}</p>
 
 <h3>💬 メッセージ</h3>

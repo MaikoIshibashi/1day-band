@@ -301,7 +301,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             <SelectWithOptions name="region" value={form.region} options={jpPrefectures as unknown as string[]} onChange={handleChange} required />
           </Field>
 
-          <Field label="希望曲（最大2曲）">
+          <Field label="希望曲（2曲選択）">
             {["SOUL LOVE", "HOWEVER", "サバイバル"].map((song) => (
               <Checkbox key={song} song={song} checked={form.songs.includes(song)} onChange={handleSongChange} />
             ))}
@@ -331,7 +331,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             </Field>
           </GroupBox>
 
-          <Field label="🗓 参加が難しい日（調整のために教えてください）">
+          <Field label="🗓 参加不可能日（調整のために教えてください）">
             <textarea name="availability" value={form.availability} onChange={handleChange} style={textareaStyle} />
           </Field>
 
