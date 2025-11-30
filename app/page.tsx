@@ -46,17 +46,17 @@ export default function PreviewPage() {
   }}
 >
 <h2 style={{ fontSize: "1.8rem", color: "var(--color-accent)" }}>
-  4th in Fukuoka
+  4th XXX
 </h2>
 <p style={{ marginTop: "0.5rem", fontSize: "1.2rem", color: "#fff" }}>
-  2026.04 開催予定
+  秋に開催予定！場所は未定で5月にメンバー募集します🙇‍♀️
 </p>
 <p style={{ marginTop: "0.5rem", color: "gray" }}>
-  🟣 募集中
+  🟣 準備中
 </p>
 
 {/* 👇ここを移動！ */}
-<Link
+{/* <Link
   href="/entry"
   style={{
     marginTop: "0.8rem",
@@ -78,7 +78,7 @@ export default function PreviewPage() {
   }}
 >
   エントリーページはこちら ✨
-</Link>
+</Link> */}
 
 <div
   style={{
@@ -95,7 +95,7 @@ export default function PreviewPage() {
 </div>
   {/* ↓ カード内に配置 */}
   <p style={{ fontSize: "0.95rem", color: "#aaa", marginTop: "1rem" }}>
-    【エントリー期間】2025/11/23 12:00 〜 2025/11/30 12:00
+  {/* ↓ ここにエントリー期間を入れる */}
   </p>
   </div>
 
