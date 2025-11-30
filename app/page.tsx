@@ -49,7 +49,7 @@ export default function PreviewPage() {
   4th XXX
 </h2>
 <p style={{ marginTop: "0.5rem", fontSize: "1.2rem", color: "#fff" }}>
-  秋に開催予定！場所は未定で5月にメンバー募集します🙇‍♀️
+  開催決まり次第メンバー募集します🙇‍♀️
 </p>
 <p style={{ marginTop: "0.5rem", color: "gray" }}>
   🟣 準備中
